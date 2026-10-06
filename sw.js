@@ -1,6 +1,6 @@
 // 한 번 열어 두면 인터넷이 없어도 켜지게 해 주는 파일입니다.
-// index.html을 고친 뒤에는 아래 숫자를 하나 올려 주세요. (v1 → v2)
-const CACHE = 'today-experiment-v1';
+// index.html을 고친 뒤에는 아래 숫자를 하나 올려 주세요. (v2 → v3)
+const CACHE = 'today-experiment-v2';
 const FILES = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './apple-touch-icon.png'];
 
 self.addEventListener('install', e => {

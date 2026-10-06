@@ -99,16 +99,6 @@ p{font-size:var(--fs-body);margin:0;line-height:1.45;word-break:keep-all;text-wr
 .hold-hint{font-family:var(--plain);font-size:13px;font-weight:600;position:absolute;top:72px;right:-10px;width:84px;text-align:center;line-height:1.25;pointer-events:none}
 .round.holding{background:var(--sky)}
 
-/* 준비물 */
-.mats{display:flex;flex-wrap:wrap;gap:16px;justify-content:center}
-.mat{background:var(--paper);border:4px solid var(--ink);border-radius:24px;padding:16px 10px 14px;width:clamp(130px,25vmin,220px)}
-.mat b{display:block;font-size:clamp(48px,12vmin,104px);line-height:1.15;font-weight:400}
-.mat span{font-size:clamp(18px,3.3vmin,30px);line-height:1.25;display:block;word-break:keep-all}
-.tip{font-family:var(--plain);font-size:var(--fs-small);line-height:1.5;margin:22px auto 0;max-width:640px;
-  background:rgba(255,253,245,.6);border:2px dashed var(--ink);border-radius:14px;padding:10px 14px;text-align:left;
-  -webkit-user-select:text;user-select:text}
-.tip strong{font-weight:700}
-
 /* 고르기 */
 .opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:18px;margin-top:8px}
 .opt{background:var(--paper);border:4px solid var(--ink);border-radius:26px;box-shadow:0 8px 0 var(--ink);
@@ -116,13 +106,6 @@ p{font-size:var(--fs-body);margin:0;line-height:1.45;word-break:keep-all;text-wr
 .opt b{display:block;font-size:clamp(54px,14vmin,124px);line-height:1.15;font-weight:400}
 .opt:active{transform:translateY(5px);box-shadow:0 3px 0 var(--ink)}
 .opt.sel{background:var(--cat);color:#fff;text-shadow:0 2px 0 rgba(28,37,65,.35);transform:translateY(5px);box-shadow:0 3px 0 var(--ink)}
-
-/* 순서 */
-.steps{display:grid;gap:18px;max-width:900px;margin:0 auto;padding:0;list-style:none}
-.steps li{display:flex;align-items:center;gap:18px;background:var(--paper);border:4px solid var(--ink);border-radius:22px;
-  padding:20px 24px;text-align:left;font-size:var(--fs-body);line-height:1.35;word-break:keep-all}
-.steps .n{flex:none;width:64px;height:64px;border-radius:50%;background:var(--cat);color:#fff;border:4px solid var(--ink);
-  display:grid;place-items:center;font-size:30px}
 
 /* 왜 그럴까 */
 .verdict{font-size:var(--fs-body);margin-bottom:16px}
@@ -182,7 +165,114 @@ th,td{text-align:left;padding:8px 10px 8px 0;border-bottom:1px solid rgba(28,37,
 th{font-weight:600}
 .miss{color:var(--tomato);font-weight:600}
 
-@media (prefers-reduced-motion:reduce){.pop,.confetti i{animation:none}.confetti{display:none}}
+
+
+.opt.no{opacity:.45;box-shadow:none;transform:translateY(5px);position:relative;animation:shake .4s}
+.opt.no::after{content:"✕";position:absolute;right:14px;top:6px;font-size:44px;color:var(--tomato)}
+@keyframes shake{25%{margin-left:-10px}75%{margin-left:10px}}
+.retry{margin-top:22px}
+.btn.ready{animation:bump .9s 3}
+@keyframes bump{50%{transform:scale(1.08)}}
+
+/* 실험 무대: 가로 1000, 세로 560 칸으로 그리고 화면에 맞춰 늘린다 */
+.in.lab{margin:0;max-width:none;height:100%;display:flex;flex-direction:column;padding:0 0 4px}
+.how{font-size:clamp(20px,3.6vmin,34px);font-weight:400;margin:0 0 12px;line-height:1.3;word-break:keep-all;text-wrap:balance}
+.stagebox{flex:1;min-height:0;position:relative;touch-action:none}
+.stage{position:absolute;width:1000px;height:560px;transform-origin:0 0;background:var(--paper);box-shadow:0 0 0 5px var(--ink);
+  border-radius:26px;overflow:hidden;touch-action:none}
+.stage.night{background:#2B3760}
+.sp{position:absolute;left:0;top:0;line-height:1;text-align:center;pointer-events:none;z-index:2}
+.sp.obj{pointer-events:auto;cursor:grab;z-index:3;touch-action:none}
+.sp.obj.held{z-index:9}
+.sp.obj.low,.sp.obj.low.held{z-index:3}
+.sp.up{z-index:8}
+.sp.pad{padding:22px}
+.sp>i{margin-left:auto;margin-right:auto}
+.sp small{display:block;font-size:24px;margin-top:4px;white-space:nowrap}
+.sp.used{opacity:.4}
+.sp.obj>.em,.sp.obj>i{animation:nudge 1s 3}
+@keyframes nudge{50%{transform:scale(1.14)}}
+.em{display:block;line-height:1.08}
+.sv{position:absolute;left:0;top:0;pointer-events:none;z-index:1}
+.sv.over{z-index:4}
+.blob{display:block;border-radius:50%;border:5px solid var(--ink)}
+.flag{font-size:54px}
+.pop2{animation:pop2 .9s both;z-index:7}
+@keyframes pop2{0%{opacity:0;margin-top:20px}30%{opacity:1;margin-top:0}100%{opacity:0;margin-top:-30px}}
+
+.tank{border:6px solid var(--ink);border-top:0;border-radius:0 0 26px 26px;z-index:5;pointer-events:none}
+.water{background:#8FD3FF;border-radius:0 0 18px 18px;z-index:1;transition:background .5s}
+.waterfront{background:rgba(63,167,245,.26);z-index:4;pointer-events:none;border-radius:0 0 18px 18px}
+.fizz{border-radius:50%;background:rgba(255,255,255,.85);z-index:4;animation:fizz 3s linear infinite;pointer-events:none}
+@keyframes fizz{to{transform:translateY(-285px);opacity:0}}
+.grain{border-radius:50%;background:#fff;border:2px solid var(--ink);z-index:6;animation:drop .8s ease-in both;pointer-events:none}
+.dropv{border-radius:50%;background:#FFE08A;border:2px solid var(--ink);z-index:6;animation:drop .8s ease-in both;pointer-events:none}
+@keyframes drop{to{transform:translateY(150px);opacity:0}}
+
+.plate{border-radius:50%;background:#fff;border:6px solid var(--ink);overflow:hidden;z-index:1}
+.plate.dish{background:#CDEBFA}.plate.milk{background:#fff}
+.paintmix{border-radius:50%}
+.dot{display:block;border-radius:50%}
+.mdot{opacity:.85;filter:blur(1.5px)}
+
+.foam{border-radius:50%;background:#FF9B6A;border:4px solid var(--ink);z-index:6;animation:foam 2.6s ease-out both;pointer-events:none}
+@keyframes foam{0%{transform:scale(.2)}25%{transform:translate(calc(var(--dx)*.25),var(--up)) scale(1)}100%{transform:translate(var(--dx),235px) scale(1.05)}}
+
+.zone{width:120px;height:120px;border:5px dashed var(--ink);border-radius:50%;opacity:.45}
+.towel{display:block;width:380px;height:26px;border-radius:10px;border:4px solid var(--ink);
+  background:repeating-linear-gradient(90deg,#8C6BE8 0 20px,#B9A4F5 20px 40px)}
+
+.wall{background:var(--paper);border:5px solid var(--ink);border-radius:12px;overflow:hidden;z-index:1}
+.shade{position:absolute;left:50%;bottom:0;margin-left:-50px;width:100px;transform-origin:50% 100%;filter:brightness(0) blur(1.5px);opacity:.6;font-size:100px;line-height:1.08;text-align:center}
+.torch{display:block;width:92px;height:46px;background:var(--tomato);border:5px solid var(--ink);border-radius:12px 4px 4px 12px;position:relative}
+.torch::after{content:"";position:absolute;right:-34px;top:-16px;width:30px;height:68px;background:var(--sun);border:5px solid var(--ink);border-radius:4px 16px 16px 4px}
+
+.pencil{display:block;width:28px;height:340px;border-radius:6px;border:4px solid var(--ink);
+  background:linear-gradient(#FF7AA8 0 9%,#C9CCD6 9% 13%,#FFCE3A 13% 88%,#F2D2A0 88% 96%,#1C2541 96%)}
+.lenswater{background:#BDE6FF;overflow:hidden;z-index:4;pointer-events:none;border-radius:0 0 18px 18px}
+.glass{border:6px solid var(--ink);border-top:0;border-radius:0 0 26px 26px;z-index:5;pointer-events:none}
+.sheet{background:#fff;border:4px solid var(--ink);border-radius:8px;z-index:1}
+.arrow{display:block;width:230px;height:130px;background:var(--tomato);clip-path:polygon(0 30%,58% 30%,58% 0,100% 50%,58% 100%,58% 70%,0 70%)}
+.lensglass{width:240px;height:340px;border:6px solid var(--ink);border-radius:18px 18px 36px 36px;background:#BDE6FF;overflow:hidden;position:relative}
+.lensglass .gsheet{position:absolute;left:0;top:0;width:380px;height:300px;background:#fff}
+
+.bit{display:block;width:28px;height:22px;background:#fff;border:3px solid var(--ink);border-radius:4px}
+.meter{font-size:40px;z-index:7}
+.glow>.em{filter:drop-shadow(0 0 16px #FFD400)}
+.nope::after{content:"✕";position:absolute;right:-6px;top:-10px;font-size:40px;color:var(--tomato)}
+
+.tray{display:block;width:460px;height:22px;background:#C98B5E;border:5px solid var(--ink);border-radius:11px}
+.sheetflat{display:block;width:150px;height:14px;background:#fff;border:4px solid var(--ink);border-radius:4px}
+.crumple{display:block;width:72px;height:66px;background:#fff;border:4px solid var(--ink);border-radius:46% 54% 40% 60%/55% 42% 58% 45%}
+
+.swab{display:block;width:18px;height:170px;background:#fff;border:4px solid var(--ink);border-radius:9px;position:relative}
+.swab::after{content:"";position:absolute;left:-9px;bottom:-10px;width:28px;height:36px;border-radius:50%;background:var(--leaf);border:4px solid var(--ink)}
+.soapy::after{content:"";position:absolute;left:50%;top:-4px;width:28px;height:28px;margin-left:-14px;border-radius:50%;background:var(--leaf);border:3px solid var(--ink)}
+
+.paperc{background:#fff;box-shadow:0 0 0 5px var(--ink);border-radius:4px;z-index:1}
+
+.cup{border:6px solid var(--ink);border-top:0;border-radius:0 0 28px 28px;overflow:hidden;background:rgba(255,255,255,.7);z-index:2;cursor:pointer;touch-action:none}
+.cupw{background:#8FD3FF}
+.ring{animation:ring .45s}
+@keyframes ring{25%{transform:rotate(2.5deg)}75%{transform:rotate(-2.5deg)}}
+
+.gbox{background:#F2B279;border:6px solid var(--ink);border-radius:26px;z-index:1}
+.peg{display:block;width:40px;height:40px;border-radius:50%;background:var(--ink)}
+.peg.knob{background:var(--sun);border:6px solid var(--ink);width:70px;height:70px}
+.grip{display:block;width:84px;height:84px;border-radius:50%;border:5px dashed var(--ink);background:rgba(255,255,255,.55)}
+
+.pier{background:#C9CCD6;border:5px solid var(--ink);border-radius:8px;z-index:1}
+.deck{background:#fff;border:4px solid var(--ink);z-index:2;transition:transform .5s ease-in,height .2s}
+.deck.sag{height:28px !important;border-radius:0 0 50% 50%/0 0 100% 100%}
+.deck.broken{transform:translateY(192px) rotate(5deg)}
+.blk{display:block;width:62px;height:62px;border-radius:10px;border:5px solid var(--ink)}
+.count small{font-size:38px;margin:0}
+
+.seg{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.pbtn.on{background:var(--ink);color:#fff}
+.parent select{font:inherit;font-size:16px;padding:8px;border:3px solid var(--ink);border-radius:12px;background:#fff;max-width:240px}
+
+@media (prefers-reduced-motion:reduce){.pop,.confetti i,.btn.ready,.sp.obj>.em,.sp.obj>i{animation:none}.confetti{display:none}}
 </style>
 </head>
 <body>
@@ -190,8 +280,7 @@ th{font-weight:600}
 
 <script>
 /* ───────── 실험 카드 ─────────
-   e 그림 / t 제목 / m 준비물 / tip 어른에게 / q 질문 / o 보기 / a 보통 나오는 결과
-   s 순서 / w 까닭 / en 오늘의 영어 단어 */
+   q 예상 질문 / o 보기 / a 정답 / how 실험 방법 / rq 실험 뒤 질문 / w 까닭 / en 영어 단어 / sim 실험 무대 */
 const CATS={
   water:{name:'물 실험',e:'💧',c:'#3FA7F5'},
   color:{name:'색깔 실험',e:'🎨',c:'#FF7AA8'},
@@ -203,263 +292,161 @@ const CATS={
 };
 const CARDS=[
 {id:'apple',cat:'water',e:'🍎',t:'사과는 물에 뜰까?',
- m:[['🍎','사과'],['🥣','큰 그릇'],['💧','물']],
- tip:'바닥이 젖을 수 있으니 수건을 깔아 주세요.',
  q:'사과를 물에 넣으면 어떻게 될까?',o:[['⬆️','둥둥 뜬다'],['⬇️','가라앉는다']],a:0,
- s:['큰 그릇에 물을 가득 담아.','사과를 살짝 넣어 봐.','뜨는지 가라앉는지 잘 봐.'],
- w:'사과 속에는 작은 공기 방이 아주 많아. 그래서 물보다 가벼워서 둥둥 떠.',en:['float','뜨다']},
+ how:'사과랑 돌멩이를 끌어서 물에 퐁당 넣어 봐!',rq:'사과는 어떻게 됐어?',
+ w:'사과 속에는 작은 공기 방이 아주 많아. 그래서 물보다 가벼워서 둥둥 떠.',en:['float','뜨다'],
+ sim:{type:'tank',items:[{e:'🍎',f:'float'},{e:'🪨',f:'sink'}]}},
 
 {id:'volcano',cat:'kitchen',e:'🌋',t:'부글부글 화산',
- m:[['🥄','베이킹소다'],['🍶','식초'],['🥤','컵'],['🍽️','쟁반']],
- tip:'거품이 눈에 튀지 않게 얼굴을 가까이 대지 않도록 해 주세요. 식초에 식용 색소를 타면 더 화산 같아요.',
  q:'베이킹소다에 식초를 부으면 어떻게 될까?',o:[['🌋','거품이 부글부글'],['😴','아무 일도 없다']],a:0,
- s:['쟁반 위에 컵을 올려.','컵에 베이킹소다를 두 숟가락 넣어.','식초를 쪼르륵 부어 봐!'],
- w:'베이킹소다와 식초가 만나면 공기 방울이 아주 많이 생겨. 그 방울들이 거품이 되어 넘치는 거야.',en:['bubble','방울']},
+ how:'베이킹소다랑 식초를 끌어서 화산에 넣어 봐!',rq:'화산은 어떻게 됐어?',
+ w:'베이킹소다와 식초가 만나면 공기 방울이 아주 많이 생겨. 그 방울들이 거품이 되어 넘치는 거야.',en:['bubble','방울'],
+ sim:{type:'react',mode:'foam'}},
 
 {id:'shadow',cat:'light',e:'🔦',t:'커지는 그림자',
- m:[['🔦','손전등'],['🧸','장난감'],['🧱','빈 벽']],
- tip:'휴대폰 플래시를 써도 돼요. 빛을 눈에 직접 비추지 않게 해 주세요.',
- q:'손전등을 장난감 가까이 가져가면 그림자는?',o:[['🐘','커진다'],['🐭','작아진다']],a:0,
- s:['방을 어둡게 하고 벽 앞에 장난감을 세워.','손전등으로 장난감을 비춰 그림자를 만들어.','손전등을 가까이, 또 멀리 움직여 봐.'],
- w:'빛이 가까이 오면 장난감이 빛을 더 많이 가려. 그래서 그림자가 커져.',en:['shadow','그림자']},
+ q:'손전등을 곰 인형 가까이 가져가면 그림자는?',o:[['🐘','커진다'],['🐭','작아진다']],a:0,
+ how:'손전등을 끌어서 곰 인형한테 가까이, 또 멀리 움직여 봐!',rq:'손전등이 가까이 갔을 때 그림자는?',
+ w:'빛이 가까이 오면 곰 인형이 빛을 더 많이 가려. 그래서 그림자가 커져.',en:['shadow','그림자'],
+ sim:{type:'shadow'}},
 
 {id:'ramp',cat:'force',e:'🚗',t:'미끄럼틀 자동차',
- m:[['🚗','장난감 자동차'],['📚','책 여러 권'],['📏','판자나 큰 책']],
- tip:'자동차를 밀지 말고 손만 떼게 해 주세요. 그래야 높이만 다르게 비교할 수 있어요.',
  q:'미끄럼틀을 더 높이면 자동차는?',o:[['🏁','더 멀리 간다'],['🐢','덜 간다']],a:0,
- s:['책 한 권에 판자를 걸쳐 낮은 미끄럼틀을 만들어.','자동차를 놓고 어디까지 가는지 봐.','책을 더 쌓아 높게 만들고 다시 놓아 봐.'],
- w:'높은 곳에서 출발하면 자동차가 더 빨라져. 빨라진 만큼 더 멀리 가.',en:['fast','빠른']},
+ how:'자동차를 끌어서 미끄럼틀 꼭대기에 올려 봐. 책을 위로 끌면 미끄럼틀이 높아져!',rq:'미끄럼틀이 높을 때 자동차는?',
+ w:'높은 곳에서 출발하면 자동차가 더 빨라져. 빨라진 만큼 더 멀리 가.',en:['fast','빠른'],
+ sim:{type:'ramp',mode:'height'}},
 
 {id:'redyellow',cat:'color',e:'🎨',t:'빨강과 노랑이 만나면',
- m:[['🔴','빨강 물감'],['🟡','노랑 물감'],['📄','종이'],['🖌️','붓']],
- tip:'붓 대신 손가락으로 섞어도 좋아요. 옷에 묻어도 되는 차림으로 해 주세요.',
  q:'빨강과 노랑을 섞으면 무슨 색이 될까?',o:[['🟠','주황'],['🟢','초록'],['🟣','보라']],a:0,
- s:['종이에 빨강 물감을 동그랗게 짜.','바로 옆에 노랑 물감을 짜.','두 색을 빙글빙글 섞어 봐.'],
- w:'빨강과 노랑이 섞이면 주황색이 돼. 색은 섞으면 새로운 색으로 변해.',en:['orange','주황색']},
-
-{id:'static',cat:'force',e:'🎈',t:'풍선 마술',
- m:[['🎈','풍선'],['🧻','휴지 조각']],
- tip:'습한 날에는 잘 안 될 수 있어요. 마른 머리카락이나 털옷에 문질러 주세요. 풍선이 터지면 조각을 바로 치워 주세요.',
- q:'머리카락에 문지른 풍선을 휴지 조각에 대면?',o:[['🧲','달라붙는다'],['😴','그대로 있다']],a:0,
- s:['휴지를 작게 찢어 책상에 뿌려.','풍선을 머리카락에 쓱쓱 열 번 문질러.','풍선을 휴지 조각 가까이 가져가 봐.'],
- w:'풍선을 문지르면 정전기라는 힘이 생겨. 이 힘이 가벼운 휴지를 끌어당겨.',en:['balloon','풍선']},
-
-{id:'phone',cat:'sound',e:'📞',t:'실 전화기',
- m:[['🥤','종이컵 두 개'],['🧵','긴 실'],['📎','클립 두 개']],
- tip:'컵 바닥 구멍은 어른이 뚫어 주세요. 실 끝에 클립을 묶으면 빠지지 않아요. 실은 3미터쯤이 좋아요.',
- q:'실을 팽팽하게 당기고 말하면 소리가 들릴까?',o:[['👂','들린다'],['🙉','안 들린다']],a:0,
- s:['종이컵 두 개를 실로 이어. 어른이 도와줘요.','한 명씩 컵을 들고 실이 팽팽해질 때까지 멀어져.','한 명은 컵에 대고 말하고, 한 명은 귀에 대고 들어 봐.'],
- w:'목소리가 컵을 떨리게 하고, 그 떨림이 실을 타고 건너가. 그래서 멀리서도 들려.',en:['sound','소리']},
-
-{id:'ice',cat:'water',e:'🧊',t:'얼음은 물에 뜰까?',
- m:[['🧊','얼음'],['🥤','투명 컵'],['💧','물']],
- tip:'얼음을 입에 넣지 않게 지켜봐 주세요.',
- q:'얼음을 물에 넣으면 어떻게 될까?',o:[['⬆️','둥둥 뜬다'],['⬇️','가라앉는다']],a:0,
- s:['투명한 컵에 물을 담아.','얼음을 두 개 넣어 봐.','옆에서 얼음이 어디 있는지 봐.'],
- w:'물이 얼어서 얼음이 되면 조금 부풀어서 가벼워져. 그래서 물 위에 떠.',en:['ice','얼음']},
-
-{id:'raisin',cat:'kitchen',e:'🍇',t:'춤추는 건포도',
- m:[['🥤','사이다'],['🍇','건포도'],['🥛','투명 컵']],
- tip:'방금 딴 탄산음료일수록 잘 돼요. 건포도가 크면 반으로 잘라 주세요.',
- q:'사이다에 건포도를 넣으면 어떻게 될까?',o:[['💃','오르락내리락 춤춘다'],['⬇️','가라앉아 가만히 있다'],['⬆️','둥둥 떠 있다']],a:0,
- s:['투명한 컵에 사이다를 부어.','건포도를 다섯 알 넣어.','건포도가 어떻게 움직이는지 지켜봐.'],
- w:'사이다의 방울이 건포도에 붙어서 튜브처럼 위로 올려 줘. 위에서 방울이 터지면 다시 내려가.',en:['dance','춤추다']},
-
-{id:'pencil',cat:'light',e:'✏️',t:'꺾이는 연필',
- m:[['🥛','투명 컵'],['💧','물'],['✏️','연필']],
- tip:'컵 옆에서 눈높이를 맞춰 보게 해 주세요.',
- q:'물컵에 넣은 연필을 옆에서 보면?',o:[['〽️','꺾여 보인다'],['➖','똑바로 보인다']],a:0,
- s:['투명한 컵에 물을 반쯤 담아.','연필을 비스듬히 넣어.','컵 옆에서 연필을 봐.'],
- w:'빛은 물을 지나갈 때 방향이 살짝 꺾여. 그래서 연필이 꺾인 것처럼 보이는 거야. 진짜로 부러진 건 아니야!',en:['pencil','연필']},
-
-{id:'rocket',cat:'air',e:'🚀',t:'풍선 로켓',
- m:[['🎈','풍선']],
- tip:'풍선은 어른이 불어 주세요. 터진 풍선 조각은 삼킬 위험이 있으니 바로 치워 주세요.',
- q:'분 풍선을 묶지 않고 놓으면?',o:[['🚀','슈웅 날아간다'],['⬇️','그냥 떨어진다']],a:0,
- s:['풍선을 크게 불어. 어른이 도와줘요.','입구를 묶지 말고 손으로 꼭 잡아.','하나, 둘, 셋 하고 손을 놓아 봐!'],
- w:'풍선 속 공기가 뒤로 빠져나오면서 풍선을 앞으로 밀어. 진짜 로켓도 이렇게 날아가.',en:['rocket','로켓']},
-
-{id:'towel',cat:'force',e:'🏎️',t:'수건 길과 맨바닥 길',
- m:[['🚗','장난감 자동차'],['📚','책과 판자'],['🧺','수건']],
- tip:'미끄럼틀 높이는 두 번 다 똑같이 맞춰 주세요.',
- q:'자동차는 어느 길에서 더 멀리 갈까?',o:[['✨','매끈한 맨바닥'],['🧺','폭신한 수건 위']],a:0,
- s:['낮은 미끄럼틀을 만들고 자동차를 맨바닥으로 굴려 봐.','이번엔 미끄럼틀 아래에 수건을 깔아.','자동차를 다시 굴려서 어디까지 가는지 봐.'],
- w:'수건은 울퉁불퉁해서 바퀴를 자꾸 붙잡아. 매끈한 바닥은 덜 붙잡아서 더 멀리 가.',en:['car','자동차']},
-
-{id:'blueyellow',cat:'color',e:'🖌️',t:'파랑과 노랑이 만나면',
- m:[['🔵','파랑 물감'],['🟡','노랑 물감'],['📄','종이'],['🖌️','붓']],
- tip:'파랑은 조금만 넣어도 색이 진해져요. 노랑을 넉넉히 짜 주세요.',
- q:'파랑과 노랑을 섞으면 무슨 색이 될까?',o:[['🟢','초록'],['🟠','주황'],['🟣','보라']],a:0,
- s:['종이에 노랑 물감을 동그랗게 짜.','바로 옆에 파랑 물감을 조금 짜.','두 색을 빙글빙글 섞어 봐.'],
- w:'파랑과 노랑이 섞이면 초록색이 돼. 나뭇잎 색을 만들 수 있어.',en:['green','초록색']},
-
-{id:'xylo',cat:'sound',e:'🎶',t:'물컵 실로폰',
- m:[['🥛','유리컵 세 개'],['💧','물'],['🥄','숟가락']],
- tip:'유리컵은 살살 두드리게 해 주세요. 같은 모양의 컵이어야 소리 차이가 잘 들려요.',
- q:'어느 컵에서 곰처럼 낮은 소리가 날까?',o:[['🐻','물이 많은 컵'],['🐦','물이 적은 컵']],a:0,
- s:['컵 세 개에 물을 조금, 반, 가득 담아.','숟가락으로 컵 옆을 살살 두드려.','어느 컵에서 낮은 소리가 나는지 들어 봐.'],
- w:'물이 많으면 컵이 천천히 떨려서 낮은 소리가 나. 물이 적으면 빨리 떨려서 높은 소리가 나.',en:['music','음악']},
-
-{id:'egg',cat:'water',e:'🥚',t:'소금물에 뜨는 달걀',
- m:[['🥚','달걀'],['🥛','투명 컵'],['💧','물'],['🧂','소금']],
- tip:'소금이 부족하면 뜨지 않아요. 뜰 때까지 한 숟가락씩 더 넣어 주세요. 날달걀을 만진 뒤에는 손을 씻겨 주세요.',
- q:'소금을 듬뿍 녹인 물에 달걀을 넣으면?',o:[['⬆️','둥둥 뜬다'],['⬇️','가라앉는다']],a:0,
- s:['컵에 물을 담고 달걀을 넣어 봐. 가라앉지?','달걀을 꺼내고 소금을 네 숟가락 넣어 잘 저어.','달걀을 다시 살짝 넣어 봐.'],
- w:'소금을 녹이면 물이 더 무거워져. 무거운 물은 달걀을 위로 밀어 올려.',en:['egg','달걀']},
-
-{id:'tissue',cat:'air',e:'🧻',t:'젖지 않는 휴지',
- m:[['🥛','투명 컵'],['🧻','휴지'],['🥣','물 담은 큰 그릇']],
- tip:'컵을 기울이면 공기가 빠져서 휴지가 젖어요. 똑바로 넣고 똑바로 빼도록 도와주세요.',
- q:'휴지를 넣은 컵을 거꾸로 물속에 넣으면 휴지는?',o:[['🌵','안 젖는다'],['💦','흠뻑 젖는다']],a:0,
- s:['휴지를 뭉쳐 컵 바닥에 꾹 눌러 넣어.','컵을 거꾸로 들고 똑바로 물속에 쑥 넣어.','똑바로 꺼내서 휴지를 만져 봐.'],
- w:'컵 안에는 눈에 안 보이는 공기가 가득해. 공기가 자리를 지켜서 물이 못 들어와.',en:['air','공기']},
-
-{id:'candy',cat:'color',e:'🌈',t:'사탕 무지개',
- m:[['🍬','색깔 사탕'],['🍽️','흰 접시'],['💧','따뜻한 물']],
- tip:'겉에 색이 입혀진 사탕이나 초콜릿을 쓰세요. 물은 뜨겁지 않고 따뜻한 정도면 충분해요.',
- q:'사탕 둘레에 물을 부으면 색깔은?',o:[['🌈','쭉쭉 퍼진다'],['😴','그대로 있다']],a:0,
- s:['흰 접시 가장자리에 사탕을 동그랗게 놓아.','접시 가운데에 따뜻한 물을 살살 부어. 어른이 도와줘요.','접시를 건드리지 말고 지켜봐.'],
- w:'사탕 겉의 색과 설탕이 물에 녹아서 퍼져 나가. 그래서 무지개 길이 생겨.',en:['rainbow','무지개']},
+ how:'물감 두 개를 접시에 넣고, 붓으로 빙글빙글 섞어 봐!',rq:'무슨 색이 됐어?',
+ w:'빨강과 노랑이 섞이면 주황색이 돼. 색은 섞으면 새로운 색으로 변해.',en:['orange','주황색'],
+ sim:{type:'stir',a:'#E53935',b:'#FDD835',m:'#FB8C00'}},
 
 {id:'magnet',cat:'force',e:'🧲',t:'자석에 붙는 건?',
- m:[['🧲','큰 자석'],['📎','클립'],['🧱','나무 블록'],['🥄','플라스틱 숟가락']],
- tip:'작은 자석은 삼키면 매우 위험해요. 큰 자석만 쓰고 끝까지 곁에서 지켜봐 주세요.',
- q:'자석에 착 붙는 건 뭘까?',o:[['📎','클립'],['🧱','나무 블록'],['🥄','플라스틱 숟가락']],a:0,
- s:['클립, 나무 블록, 숟가락을 나란히 놓아.','자석을 하나씩 가까이 대 봐.','어떤 게 착 붙는지 찾아봐.'],
- w:'자석은 쇠로 만든 물건을 끌어당겨. 클립은 쇠라서 붙고, 나무와 플라스틱은 안 붙어.',en:['magnet','자석']},
+ q:'자석에 착 붙는 건 뭘까?',o:[['📎','클립'],['🪵','나무토막'],['🥄','플라스틱 숟가락']],a:0,
+ how:'자석을 끌어서 물건마다 가까이 대 봐!',rq:'자석에 착 붙은 건 뭐였어?',
+ w:'자석은 쇠로 만든 물건을 끌어당겨. 클립은 쇠라서 붙고, 나무와 플라스틱은 안 붙어.',en:['magnet','자석'],
+ sim:{type:'attract',tool:'🧲',oy:62,objs:[{e:'📎',pull:1},{e:'🪵'},{e:'🥄'}]}},
 
-{id:'pepper',cat:'kitchen',e:'🧼',t:'도망가는 후추',
- m:[['🍽️','접시'],['💧','물'],['🧂','후추'],['🧼','주방 세제']],
- tip:'실험이 끝나면 손을 씻겨 주세요. 다시 하려면 접시를 깨끗이 헹궈야 해요.',
- q:'세제 묻힌 손가락으로 후추 물을 콕 찍으면?',o:[['🏃','후추가 도망간다'],['🤏','손가락에 모인다'],['😴','아무 일도 없다']],a:0,
- s:['접시에 물을 담고 후추를 톡톡 뿌려.','손가락 끝에 세제를 조금 묻혀.','물 한가운데를 콕 찍어 봐!'],
- w:'물은 서로 꼭 붙잡고 있어. 세제가 닿은 곳은 그 힘이 약해져서, 물이 바깥으로 확 당겨지고 후추도 따라가.',en:['soap','비누']},
+{id:'xylo',cat:'sound',e:'🎶',t:'물컵 실로폰',
+ q:'어느 컵에서 곰처럼 낮은 소리가 날까?',o:[['🐻','물이 많은 컵'],['🐦','물이 적은 컵']],a:0,
+ how:'숟가락을 끌어서 컵을 하나씩 통통 두드려 봐!',rq:'낮은 소리가 난 컵은?',
+ w:'물이 많으면 컵이 천천히 떨려서 낮은 소리가 나. 물이 적으면 빨리 떨려서 높은 소리가 나.',en:['music','음악'],
+ sim:{type:'xylo'}},
 
-{id:'arrow',cat:'light',e:'➡️',t:'뒤집히는 화살표',
- m:[['📄','종이'],['🖍️','크레파스'],['🥛','둥근 투명 컵'],['💧','물']],
- tip:'종이를 컵에서 한 뼘쯤 떨어뜨려야 뒤집혀 보여요. 거리를 조금씩 바꿔 가며 찾아 주세요.',
- q:'물컵 너머로 화살표를 보면?',o:[['🔄','반대쪽을 가리킨다'],['➡️','똑같이 보인다']],a:0,
- s:['종이에 화살표를 크게 그려.','빈 컵 뒤에 종이를 세우고 컵 너머로 봐.','컵에 물을 채우고 종이를 조금 뒤로 옮겨서 다시 봐.'],
- w:'물이 담긴 둥근 컵은 돋보기처럼 빛을 꺾어. 빛이 서로 엇갈려서 왼쪽과 오른쪽이 바뀌어 보여.',en:['arrow','화살표']},
+{id:'ice',cat:'water',e:'🧊',t:'얼음은 물에 뜰까?',
+ q:'얼음을 물에 넣으면 어떻게 될까?',o:[['⬆️','둥둥 뜬다'],['⬇️','가라앉는다']],a:0,
+ how:'얼음을 끌어서 물에 넣어 봐. 물속 깊이 꾹 눌러도 돼!',rq:'얼음은 어떻게 됐어?',
+ w:'물이 얼어서 얼음이 되면 조금 부풀어서 가벼워져. 그래서 물 위에 떠.',en:['ice','얼음'],
+ sim:{type:'tank',items:[{e:'🧊',f:'float'},{e:'🧊',f:'float',s:80}]}},
+
+{id:'raisin',cat:'kitchen',e:'🍇',t:'춤추는 건포도',
+ q:'사이다에 건포도를 넣으면 어떻게 될까?',o:[['💃','오르락내리락 춤춘다'],['⬇️','가라앉아 가만히 있다'],['⬆️','둥둥 떠 있다']],a:0,
+ how:'건포도를 끌어서 사이다에 넣고 가만히 지켜봐!',rq:'건포도는 어떻게 됐어?',
+ w:'사이다의 방울이 건포도에 붙어서 튜브처럼 위로 올려 줘. 위에서 방울이 터지면 다시 내려가.',en:['dance','춤추다'],
+ sim:{type:'tank',soda:1,liquid:'#D9F2E4',items:[{blob:'#5B3A6B',f:'dance',s:44},{blob:'#5B3A6B',f:'dance',s:40},{blob:'#5B3A6B',f:'dance',s:46}]}},
+
+{id:'pencil',cat:'light',e:'✏️',t:'꺾이는 연필',
+ q:'물컵에 넣은 연필을 옆에서 보면?',o:[['〽️','꺾여 보인다'],['➖','똑바로 보인다']],a:0,
+ how:'연필을 끌어서 물컵 속에 쏙 넣어 봐!',rq:'물속에 들어간 연필은 어떻게 보였어?',
+ w:'빛은 물을 지나갈 때 방향이 살짝 꺾여. 그래서 연필이 꺾인 것처럼 보이는 거야. 진짜로 부러진 건 아니야!',en:['pencil','연필'],
+ sim:{type:'pencil'}},
+
+{id:'rocket',cat:'air',e:'🚀',t:'풍선 로켓',
+ q:'분 풍선을 묶지 않고 놓으면?',o:[['🚀','슈웅 날아간다'],['⬇️','그냥 떨어진다']],a:0,
+ how:'풍선을 꾹 누르고 있으면 점점 커져. 손을 떼면 발사!',rq:'풍선은 어떻게 됐어?',
+ w:'풍선 속 공기가 뒤로 빠져나오면서 풍선을 앞으로 밀어. 진짜 로켓도 이렇게 날아가.',en:['rocket','로켓'],
+ sim:{type:'rocket'}},
+
+{id:'towel',cat:'force',e:'🏎️',t:'수건 길과 맨바닥 길',
+ q:'자동차는 어느 길에서 더 멀리 갈까?',o:[['✨','매끈한 맨바닥'],['🧺','폭신한 수건 위']],a:0,
+ how:'자동차를 미끄럼틀 꼭대기에 올려 봐. 그다음 수건을 길에 깔고 또 해 봐!',rq:'자동차가 더 멀리 간 길은?',
+ w:'수건은 울퉁불퉁해서 바퀴를 자꾸 붙잡아. 매끈한 바닥은 덜 붙잡아서 더 멀리 가.',en:['car','자동차'],
+ sim:{type:'ramp',mode:'surface'}},
+
+{id:'blueyellow',cat:'color',e:'🖌️',t:'파랑과 노랑이 만나면',
+ q:'파랑과 노랑을 섞으면 무슨 색이 될까?',o:[['🟢','초록'],['🟠','주황'],['🟣','보라']],a:0,
+ how:'물감 두 개를 접시에 넣고, 붓으로 빙글빙글 섞어 봐!',rq:'무슨 색이 됐어?',
+ w:'파랑과 노랑이 섞이면 초록색이 돼. 나뭇잎 색을 만들 수 있어.',en:['green','초록색'],
+ sim:{type:'stir',a:'#1E88E5',b:'#FDD835',m:'#43A047'}},
+
+{id:'static',cat:'force',e:'🎈',t:'풍선 마술',
+ q:'머리카락에 문지른 풍선을 종이 조각에 대면?',o:[['🧲','달라붙는다'],['😴','그대로 있다']],a:0,
+ how:'풍선을 머리카락에 쓱쓱 문질러 봐. 번개가 세 개 모이면 종이 조각에 가까이 대!',rq:'종이 조각은 어떻게 됐어?',
+ w:'풍선을 문지르면 정전기라는 힘이 생겨. 이 힘이 가벼운 종이를 끌어당겨.',en:['balloon','풍선'],
+ sim:{type:'attract',tool:'🎈',oy:-8,rub:1,objs:[0,1,2,3,4,5,6,7].map(i=>({bit:1,pull:1,x:330+i*62,y:455+(i%3)*18}))}},
+
+{id:'egg',cat:'water',e:'🥚',t:'소금물에 뜨는 달걀',
+ q:'소금을 듬뿍 녹인 물에 달걀을 넣으면?',o:[['⬆️','둥둥 뜬다'],['⬇️','가라앉는다']],a:0,
+ how:'달걀을 물에 넣어 봐. 그다음 소금을 세 번 넣어 봐!',rq:'소금물에서 달걀은 어떻게 됐어?',
+ w:'소금을 녹이면 물이 더 무거워져. 무거운 물은 달걀을 위로 밀어 올려.',en:['egg','달걀'],
+ sim:{type:'tank',salt:1,items:[{e:'🥚',f:'salt'}]}},
 
 {id:'paper',cat:'air',e:'📄',t:'종이 떨어뜨리기',
- m:[['📄','종이 두 장']],
- tip:'의자 위처럼 조금 높은 곳에서 두 손을 동시에 떼면 차이가 잘 보여요. 올라설 때 잡아 주세요.',
  q:'펼친 종이와 구긴 종이, 누가 먼저 떨어질까?',o:[['🪨','구긴 종이'],['📄','펼친 종이'],['🤝','똑같이']],a:0,
- s:['종이 한 장을 공처럼 꾹꾹 구겨.','한 손에 구긴 종이, 한 손에 펼친 종이를 들어.','두 손을 같이 놓아 봐!'],
- w:'펼친 종이는 넓어서 공기가 아래에서 많이 받쳐 줘. 구긴 종이는 공기를 쏙쏙 피해서 빨리 떨어져.',en:['paper','종이']},
+ how:'받침대를 옆으로 쏙 빼서 종이 두 개를 같이 떨어뜨려 봐!',rq:'누가 먼저 떨어졌어?',
+ w:'펼친 종이는 넓어서 공기가 아래에서 많이 받쳐 줘. 구긴 종이는 공기를 쏙쏙 피해서 빨리 떨어져.',en:['paper','종이'],
+ sim:{type:'fall'}},
 
-{id:'band',cat:'sound',e:'🎸',t:'고무줄 기타',
- m:[['📦','빈 통'],['➰','고무줄']],
- tip:'고무줄이 튕겨 얼굴에 맞지 않게 지켜봐 주세요.',
- q:'고무줄을 더 팽팽하게 당겨서 튕기면 소리는?',o:[['🐦','높아진다'],['🐻','낮아진다']],a:0,
- s:['빈 통에 고무줄을 끼워.','고무줄을 튕겨서 소리를 들어 봐.','고무줄을 손으로 더 당긴 다음 다시 튕겨 봐.'],
- w:'고무줄이 떨리면 소리가 나. 팽팽할수록 더 빨리 떨려서 높은 소리가 나.',en:['guitar','기타']},
-
-{id:'oil',cat:'water',e:'🫒',t:'물과 기름',
- m:[['🥛','투명 컵'],['💧','물'],['🧴','식용유'],['🥄','숟가락']],
- tip:'물에 식용 색소를 타면 층이 더 잘 보여요. 기름은 키친타월로 닦아 버려 주세요.',
- q:'물에 식용유를 붓고 저으면?',o:[['⬆️','기름이 위로 뜬다'],['🌀','잘 섞인다'],['⬇️','기름이 가라앉는다']],a:0,
- s:['투명한 컵에 물을 반쯤 담아.','식용유를 조금 부어.','숟가락으로 저은 다음 가만히 기다려 봐.'],
- w:'물과 기름은 서로 섞이기 싫어해. 기름이 더 가벼워서 물 위로 올라가.',en:['oil','기름']},
+{id:'pepper',cat:'kitchen',e:'🧼',t:'도망가는 후추',
+ q:'세제 묻힌 손가락으로 후추 물을 콕 찍으면?',o:[['🏃','후추가 도망간다'],['🤏','손가락에 모인다'],['😴','아무 일도 없다']],a:0,
+ how:'세제 묻힌 손가락을 끌어서 물 한가운데를 콕 찍어 봐!',rq:'후추는 어떻게 됐어?',
+ w:'물은 서로 꼭 붙잡고 있어. 세제가 닿은 곳은 그 힘이 약해져서, 물이 바깥으로 확 당겨지고 후추도 따라가.',en:['soap','비누'],
+ sim:{type:'scatter'}},
 
 {id:'bridge',cat:'force',e:'🌉',t:'종이 다리',
- m:[['📄','종이 두 장'],['📚','책 두 더미'],['🧱','작은 블록']],
- tip:'블록 대신 동전을 써도 되지만, 입에 넣지 않게 지켜봐 주세요.',
  q:'어느 다리가 더 튼튼할까?',o:[['〰️','지그재그로 접은 종이'],['📄','평평한 종이']],a:0,
- s:['책 두 더미 사이에 평평한 종이를 걸치고 블록을 올려 봐.','다른 종이를 부채처럼 지그재그로 접어.','접은 종이를 걸치고 블록을 몇 개 올릴 수 있는지 세어 봐.'],
- w:'종이를 접으면 주름이 기둥처럼 버텨 줘. 그래서 같은 종이인데도 훨씬 튼튼해져.',en:['bridge','다리']},
+ how:'블록을 끌어서 두 다리 위에 올려 봐. 어느 다리가 더 많이 버틸까?',rq:'블록을 더 많이 버틴 다리는?',
+ w:'종이를 접으면 주름이 기둥처럼 버텨 줘. 그래서 같은 종이인데도 훨씬 튼튼해져.',en:['bridge','다리'],
+ sim:{type:'bridge'}},
 
-{id:'marker',cat:'color',e:'🖊️',t:'검은색 속에 숨은 색',
- m:[['🧻','키친타월'],['🖊️','검은 수성 사인펜'],['🥤','컵'],['💧','물']],
- tip:'유성펜은 안 번져요. 수성 사인펜인지 확인해 주세요. 펜에 따라 한두 가지 색만 나올 수도 있어요.',
- q:'검은 사인펜 점에 물이 올라오면?',o:[['🌈','여러 색이 나온다'],['⚫','검은색 그대로다']],a:0,
- s:['키친타월을 길게 자르고 아래쪽에 검은 점을 크게 찍어.','컵에 물을 조금만 담아.','점은 물에 닿지 않게, 타월 끝만 물에 담그고 기다려.'],
- w:'검은색 잉크는 사실 여러 색을 섞어 만든 거야. 물이 올라가면서 색들을 따로따로 데려가.',en:['black','검은색']},
+{id:'arrow',cat:'light',e:'➡️',t:'뒤집히는 화살표',
+ q:'물컵 너머로 화살표를 보면?',o:[['🔄','반대쪽을 가리킨다'],['➡️','똑같이 보인다']],a:0,
+ how:'물컵을 끌어서 화살표 앞에 놓아 봐!',rq:'물컵 너머로 본 화살표는?',
+ w:'물이 담긴 둥근 컵은 돋보기처럼 빛을 꺾어. 빛이 서로 엇갈려서 왼쪽과 오른쪽이 바뀌어 보여.',en:['arrow','화살표'],
+ sim:{type:'arrow'}},
 
-{id:'bottle',cat:'kitchen',e:'🍾',t:'저절로 부푸는 풍선',
- m:[['🍾','빈 페트병'],['🍶','식초'],['🥄','베이킹소다'],['🎈','풍선']],
- tip:'풍선에 가루를 넣을 때 종이 깔때기를 쓰면 쉬워요. 풍선을 병 입구에 끝까지 씌워 주세요.',
- q:'식초 병에 씌운 풍선 속 가루를 떨어뜨리면 풍선은?',o:[['🎈','저절로 부푼다'],['😴','그대로다']],a:0,
- s:['병에 식초를 손가락 두 마디만큼 부어.','풍선에 베이킹소다를 두 숟가락 넣고 병에 씌워. 어른이 도와줘요.','풍선을 들어 올려 가루를 병 속으로 떨어뜨려!'],
- w:'식초와 베이킹소다가 만나면 공기 같은 기체가 생겨. 갈 곳 없는 기체가 풍선 속으로 들어가 부풀려.',en:['big','큰']},
+{id:'band',cat:'sound',e:'🎸',t:'고무줄 기타',
+ q:'고무줄을 더 팽팽하게 당겨서 튕기면 소리는?',o:[['🐦','높아진다'],['🐻','낮아진다']],a:0,
+ how:'동그라미를 아래로 당겼다 놓아 봐. 노란 손잡이를 옆으로 끌면 고무줄이 팽팽해져!',rq:'팽팽한 고무줄 소리는 어땠어?',
+ w:'고무줄이 떨리면 소리가 나. 팽팽할수록 더 빨리 떨려서 높은 소리가 나.',en:['guitar','기타'],
+ sim:{type:'band'}},
 
-{id:'rice',cat:'sound',e:'🍚',t:'춤추는 쌀알',
- m:[['🥣','그릇'],['⬜','비닐 랩'],['🍚','쌀알'],['🍳','냄비와 숟가락']],
- tip:'랩이 팽팽할수록, 소리가 클수록 잘 튀어요. 소리가 크니 귀 가까이에서는 치지 않게 해 주세요.',
- q:'쌀알 옆에서 냄비를 탕 치면 쌀알은?',o:[['🤸','통통 튄다'],['😴','가만히 있다']],a:0,
- s:['그릇에 랩을 팽팽하게 씌워. 어른이 도와줘요.','랩 위에 쌀알을 조금 올려.','그릇 가까이에서 냄비를 숟가락으로 탕탕 쳐 봐.'],
- w:'소리는 공기를 떨리게 해. 그 떨림이 랩에 닿아서 쌀알이 통통 튀는 거야.',en:['jump','뛰다']},
-
-{id:'tangerine',cat:'water',e:'🍊',t:'귤의 구명조끼',
- m:[['🍊','귤 두 개'],['🥣','큰 그릇'],['💧','물']],
- tip:'귤에 따라 깐 귤도 뜰 수 있어요. 그럴 땐 다른 귤로 한 번 더 해 보세요.',
- q:'누가 물에 뜰까?',o:[['🍊','껍질 있는 귤'],['🟠','껍질 깐 귤'],['🤝','둘 다']],a:0,
- s:['귤 하나는 껍질을 까.','큰 그릇에 물을 가득 담아.','귤 두 개를 같이 넣어 봐.'],
- w:'귤껍질에는 작은 공기 방이 많아서 구명조끼처럼 귤을 띄워 줘. 껍질을 벗기면 조끼가 없어져서 가라앉아.',en:['sink','가라앉다']},
-
-{id:'cupflip',cat:'air',e:'🥛',t:'쏟아지지 않는 물',
- m:[['🥛','컵'],['💧','물'],['🃏','빳빳한 종이']],
- tip:'싱크대나 욕실에서 해 주세요. 코팅된 카드나 엽서가 좋고, 컵에 물을 가득 채울수록 잘 돼요.',
- q:'물이 가득한 컵을 종이로 덮고 뒤집으면?',o:[['🙌','물이 안 쏟아진다'],['💦','와르르 쏟아진다']],a:0,
- s:['컵에 물을 가득 채워.','빳빳한 종이로 입구를 덮고 손으로 눌러.','컵을 뒤집은 다음 종이에서 손을 살짝 떼 봐. 어른이 도와줘요.'],
- w:'우리 둘레의 공기가 종이를 아래에서 위로 밀어 줘. 그 힘이 물을 받쳐서 안 쏟아져.',en:['cup','컵']},
-
-{id:'warm',cat:'water',e:'🌡️',t:'따뜻한 물과 차가운 물',
- m:[['🥛','투명 컵 두 개'],['♨️','따뜻한 물'],['❄️','차가운 물'],['🎨','식용 색소']],
- tip:'따뜻한 물은 어른이 준비해 주세요. 뜨겁지 않아도 차이가 보여요. 색소를 넣은 뒤에는 젓지 않아요.',
- q:'색소 한 방울은 어디서 더 빨리 퍼질까?',o:[['♨️','따뜻한 물'],['❄️','차가운 물'],['🤝','똑같다']],a:0,
- s:['컵 하나에는 따뜻한 물, 하나에는 차가운 물을 담아.','두 컵에 색소를 한 방울씩 똑 떨어뜨려.','젓지 말고 색이 퍼지는 걸 지켜봐.'],
- w:'물은 아주 작은 알갱이들이 모인 거야. 따뜻하면 알갱이들이 더 빨리 움직여서 색을 빨리 퍼뜨려.',en:['hot','뜨거운']},
-
-{id:'milk',cat:'kitchen',e:'🥛',t:'우유 색깔 폭죽',
- m:[['🍽️','접시'],['🥛','우유'],['🎨','식용 색소'],['🧼','세제 묻힌 면봉']],
- tip:'저지방보다 일반 우유가 잘 돼요. 실험한 우유는 마시지 않게 해 주세요.',
- q:'색소 띄운 우유에 세제 묻힌 면봉을 대면?',o:[['🎆','색이 확 퍼진다'],['😴','색이 그대로 있다']],a:0,
- s:['접시에 우유를 얕게 부어.','색소를 여기저기 한 방울씩 떨어뜨려.','세제 묻힌 면봉으로 가운데를 콕 찍어 봐!'],
- w:'세제는 우유 속 기름을 만나면 이리저리 쫓아다녀. 그 움직임 때문에 색이 폭죽처럼 퍼져.',en:['milk','우유']},
+{id:'oil',cat:'water',e:'🫒',t:'물과 기름',
+ q:'기름 방울을 물속 깊이 넣으면?',o:[['⬆️','위로 떠오른다'],['⬇️','바닥에 가라앉는다'],['🌀','물에 녹아 사라진다']],a:0,
+ how:'기름 방울을 끌어서 물속 깊이 넣었다가 놓아 봐!',rq:'기름 방울은 어떻게 됐어?',
+ w:'물과 기름은 서로 섞이기 싫어해. 기름이 더 가벼워서 물 위로 올라가.',en:['oil','기름'],
+ sim:{type:'tank',items:[{blob:'#F7C948',f:'float',s:70},{blob:'#F7C948',f:'float',s:56},{blob:'#F7C948',f:'float',s:64}]}},
 
 {id:'crayon',cat:'color',e:'🖍️',t:'숨은 그림 찾기',
- m:[['📄','흰 종이'],['🖍️','흰 크레파스'],['🎨','물감'],['🖌️','붓']],
- tip:'물감은 물을 넉넉히 타서 묽게 해 주세요. 어른이 미리 비밀 그림을 그려 두면 더 신나요.',
  q:'흰 크레파스 그림 위에 물감을 칠하면?',o:[['🪄','그림이 나타난다'],['🙈','그림이 안 보인다']],a:0,
- s:['흰 종이에 흰 크레파스로 꾹꾹 눌러 그림을 그려.','붓에 묽은 물감을 듬뿍 묻혀.','종이 위를 쓱쓱 칠해 봐.'],
- w:'크레파스는 기름으로 만들어서 물감을 튕겨 내. 그래서 그린 자리만 하얗게 남아.',en:['white','흰색']},
+ how:'붓을 끌어서 흰 종이를 쓱쓱 칠해 봐!',rq:'물감을 칠했더니 어떻게 됐어?',
+ w:'크레파스는 기름으로 만들어서 물감을 튕겨 내. 그래서 그린 자리만 하얗게 남아.',en:['white','흰색'],
+ sim:{type:'reveal'}},
 
-{id:'walk',cat:'color',e:'🚶',t:'걸어가는 물',
- m:[['🥛','투명 컵 세 개'],['💧','물'],['🎨','식용 색소 두 색'],['🧻','키친타월']],
- tip:'물이 올라가는 건 금방 보이지만 빈 컵이 차려면 한두 시간 걸려요. 그대로 두고 나중에 다시 보여 주세요.',
- q:'색물 컵과 빈 컵을 키친타월로 이으면?',o:[['🚶','물이 건너간다'],['😴','물이 그대로 있다']],a:0,
- s:['양쪽 컵에 색물을 가득 담고 가운데에 빈 컵을 놓아.','키친타월을 길게 접어 색물 컵과 빈 컵을 다리처럼 이어.','물이 타월을 타고 올라가는지 지켜봐.'],
- w:'키친타월에는 아주 작은 구멍이 많아. 물이 그 구멍을 타고 기어 올라가서 옆 컵으로 넘어가.',en:['walk','걷다']},
+{id:'bottle',cat:'kitchen',e:'🍾',t:'저절로 부푸는 풍선',
+ q:'식초 병에 베이킹소다를 넣으면 풍선은?',o:[['🎈','저절로 부푼다'],['😴','그대로다']],a:0,
+ how:'베이킹소다랑 식초를 끌어서 병에 넣어 봐!',rq:'풍선은 어떻게 됐어?',
+ w:'식초와 베이킹소다가 만나면 공기 같은 기체가 생겨. 갈 곳 없는 기체가 풍선 속으로 들어가 부풀려.',en:['big','큰'],
+ sim:{type:'react',mode:'balloon'}},
 
-{id:'saltice',cat:'water',e:'🧂',t:'소금 뿌린 얼음',
- m:[['🧊','얼음 두 개'],['🍽️','접시 두 개'],['🧂','소금']],
- tip:'10분쯤 걸려요. 기다리는 동안 타이머를 같이 보면 좋아요.',
- q:'어느 얼음이 더 빨리 녹을까?',o:[['🧂','소금 뿌린 얼음'],['🧊','그냥 얼음'],['🤝','똑같다']],a:0,
- s:['접시 두 개에 얼음을 하나씩 놓아.','한쪽 얼음에만 소금을 솔솔 뿌려.','조금 기다렸다가 어느 쪽이 더 녹았는지 봐.'],
- w:'소금은 얼음을 더 잘 녹게 만들어. 겨울에 눈 쌓인 길에 소금 같은 가루를 뿌리는 것도 그래서야.',en:['salt','소금']},
+{id:'tangerine',cat:'water',e:'🍊',t:'귤의 구명조끼',
+ q:'누가 물에 뜰까?',o:[['🍊','껍질 있는 귤'],['🟠','껍질 깐 귤'],['🤝','둘 다']],a:0,
+ how:'귤 두 개를 끌어서 물에 넣어 봐!',rq:'물에 뜬 건 누구였어?',
+ w:'귤껍질에는 작은 공기 방이 많아서 구명조끼처럼 귤을 띄워 줘. 껍질을 벗기면 조끼가 없어져서 가라앉아.',en:['sink','가라앉다'],
+ sim:{type:'tank',items:[{e:'🍊',f:'float',n:'껍질 있는 귤'},{e:'🟠',f:'sink',n:'껍질 깐 귤',s:84}]}},
 
-{id:'oobleck',cat:'kitchen',e:'🥣',t:'이상한 반죽',
- m:[['🥣','그릇'],['🌽','전분 가루'],['💧','물']],
- tip:'전분 한 컵에 물 반 컵 정도예요. 남은 반죽을 하수구에 버리면 막혀요. 말려서 쓰레기통에 버려 주세요.',
- q:'전분 반죽을 주먹으로 탁 치면?',o:[['🪨','딱딱하다'],['💦','물처럼 튄다']],a:0,
- s:['그릇에 전분 가루와 물을 넣고 손으로 천천히 섞어.','반죽을 손가락으로 천천히 눌러 봐. 쑥 들어가지?','이번엔 주먹으로 탁 쳐 봐!'],
- w:'이 반죽은 천천히 만지면 물처럼 흐르고, 세게 치면 가루들이 꽉 뭉쳐서 딱딱해져.',en:['hard','딱딱한']},
-
-{id:'drop',cat:'water',e:'🪙',t:'동전 위 물방울',
- m:[['🪙','동전'],['💧','물'],['🥤','빨대']],
- tip:'빨대를 물에 담그고 위쪽 구멍을 손가락으로 막았다 떼면 한 방울씩 떨어져요. 동전을 입에 넣지 않게 지켜봐 주세요.',
- q:'동전 위에 물방울을 계속 올리면?',o:[['💧','볼록하게 솟는다'],['💦','바로 흘러내린다']],a:0,
- s:['평평한 곳에 동전을 놓아.','빨대로 물을 한 방울씩 동전 위에 떨어뜨려.','옆에서 물이 어떤 모양인지 봐.'],
- w:'물방울들은 서로 손을 꼭 잡고 있어. 그래서 넘치지 않고 볼록하게 버텨.',en:['coin','동전']}
+{id:'milk',cat:'kitchen',e:'🥛',t:'우유 색깔 폭죽',
+ q:'색소 띄운 우유에 세제 묻힌 면봉을 대면?',o:[['🎆','색이 확 퍼진다'],['😴','색이 그대로 있다']],a:0,
+ how:'세제 묻힌 면봉을 끌어서 우유 가운데를 콕 찍어 봐!',rq:'색깔은 어떻게 됐어?',
+ w:'세제는 우유 속 기름을 만나면 이리저리 쫓아다녀. 그 움직임 때문에 색이 폭죽처럼 퍼져.',en:['milk','우유'],
+ sim:{type:'scatter',milk:1}}
 ];
-const STEP_LABELS=['준비물','예상','실험','결과','까닭'];
-const BADGES=[[1,'🌱','첫 실험'],[3,'🔍','꼬마 과학자'],[7,'🥽','실험 대장'],[15,'🎓','호기심 박사'],[25,'🚀','과학 탐험가'],[CARDS.length,'🏆','실험 마스터']];
+const STEP_LABELS=['예상','실험','결과','까닭'];
+const BADGES=[[1,'🌱','첫 실험'],[3,'🔍','꼬마 과학자'],[7,'🥽','실험 대장'],[12,'🎓','호기심 박사'],[18,'🚀','과학 탐험가'],[CARDS.length,'🏆','실험 마스터']];
 
 /* ───────── 저장 ───────── */
-const KEY='today-experiment-v1';
-let S={name:'',voice:true,english:true,done:{},extra:{}};
+const KEY='today-experiment-v2';
+let S={name:'',voice:true,english:true,tone:'play',vname:'',done:{},extra:{}};
 let storageOK=true;
 try{const raw=localStorage.getItem(KEY);if(raw)S=Object.assign(S,JSON.parse(raw));}catch(e){storageOK=false;}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){storageOK=false;}}
@@ -467,8 +454,8 @@ function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){storag
 /* ───────── 날짜와 진도 ───────── */
 function today(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 function dayNum(){const d=new Date();return Math.floor((d.getTime()-d.getTimezoneOffset()*60000)/86400000);}
-const doneCount=()=>Object.keys(S.done).length;
-const doneToday=()=>Object.values(S.done).filter(x=>x.d===today()).length;
+const doneCount=()=>CARDS.filter(c=>S.done[c.id]).length;
+const doneToday=()=>CARDS.filter(c=>S.done[c.id]&&S.done[c.id].d===today()).length;
 const allowedToday=()=>1+(S.extra[today()]||0);
 const nextCard=()=>CARDS.find(c=>!S.done[c.id]);
 function earned(){
@@ -478,28 +465,50 @@ function earned(){
   return out;
 }
 
-/* ───────── 말하기 ───────── */
+/* ───────── 말하기와 효과음 ─────────
+   아이패드에 들어 있는 목소리를 쓰고, 높낮이와 빠르기로 아이 같은 말투를 만든다 */
+const TONES={calm:[1.1,0.95,'차분하게'],play:[1.55,1.06,'장난꾸러기'],tiny:[2,1.02,'꼬마']};
 let lastSay=[];
 function clean(t){return t.replace(/[\u{1F000}-\u{1FFFF}\u{2190}-\u{2BFF}\u{3030}\u{303D}\u{FE0F}\u{200D}]/gu,' ');}
+function koVoices(){try{return speechSynthesis.getVoices().filter(v=>/^ko/i.test(v.lang||''));}catch(e){return [];}}
 function pickVoice(lang){
-  try{const vs=speechSynthesis.getVoices().filter(v=>v.lang&&v.lang.replace('_','-').startsWith(lang.slice(0,2)));
-    return vs.find(v=>v.lang.replace('_','-')===lang)||vs[0]||null;}catch(e){return null;}
+  try{
+    if(lang==='ko-KR'){const ks=koVoices();return ks.find(v=>v.name===S.vname)||ks[0]||null;}
+    const vs=speechSynthesis.getVoices().filter(v=>(v.lang||'').replace('_','-').startsWith(lang.slice(0,2)));
+    return vs.find(v=>v.lang.replace('_','-')===lang)||vs[0]||null;
+  }catch(e){return null;}
 }
 function say(parts,force){
   lastSay=parts;
   if((!S.voice&&!force)||!('speechSynthesis' in window))return;
   try{
     speechSynthesis.cancel();
+    const tn=TONES[S.tone]||TONES.play;
     parts.forEach(p=>{
       const lang=p.lang||'ko-KR',u=new SpeechSynthesisUtterance(clean(p.t));
-      u.lang=lang;u.rate=lang==='ko-KR'?0.95:0.8;u.pitch=1.1;
+      u.lang=lang;u.pitch=tn[0];u.rate=lang==='ko-KR'?tn[1]:0.8;
       const v=pickVoice(lang);if(v)u.voice=v;
       speechSynthesis.speak(u);
     });
   }catch(e){}
 }
 const ko=t=>({t});
-if('speechSynthesis' in window){try{speechSynthesis.getVoices();}catch(e){}}
+if('speechSynthesis' in window){try{speechSynthesis.getVoices();speechSynthesis.onvoiceschanged=()=>{if(view==='parent')V.parent();};}catch(e){}}
+
+let AC=null;
+function tone(f,dur,type,vol,delay){
+  if(!S.voice)return;
+  try{
+    AC=AC||new (window.AudioContext||window.webkitAudioContext)();
+    if(AC.state==='suspended')AC.resume();
+    const t=AC.currentTime+(delay||0),o=AC.createOscillator(),g=AC.createGain();
+    o.type=type||'sine';o.frequency.value=f;
+    g.gain.setValueAtTime(vol||0.25,t);g.gain.exponentialRampToValueAtTime(0.001,t+(dur||0.4));
+    o.connect(g);g.connect(AC.destination);o.start(t);o.stop(t+(dur||0.4)+0.05);
+  }catch(e){}
+}
+const sfxGood=()=>{tone(660,.16,'triangle',.22);tone(990,.35,'triangle',.22,.14);};
+const sfxBad=()=>{tone(220,.22,'square',.07);tone(180,.3,'square',.07,.18);};
 
 /* ───────── 보글이 ───────── */
 function buddy(mood){
@@ -531,6 +540,529 @@ function callName(){
   return n+((code-0xAC00)%28?'아, ':'야, ');
 }
 
+/* ───────── 실험 무대 도구 ───────── */
+const SW=1000,SH=560;
+let sim=null;
+function openStage(host,onDone){
+  const st=document.createElement('div');st.className='stage';host.appendChild(st);
+  const me={st,alive:true,done:false,offs:[]};
+  const fit=()=>{
+    const w=host.clientWidth-12,h=host.clientHeight-12,k=Math.max(0.1,Math.min(w/SW,h/SH));
+    st.style.transform=`scale(${k})`;st.style.left=(host.clientWidth-SW*k)/2+'px';st.style.top=(host.clientHeight-SH*k)/2+'px';
+  };
+  fit();window.addEventListener('resize',fit);me.offs.push(()=>window.removeEventListener('resize',fit));
+  me.finish=()=>{if(me.done||!me.alive)return;me.done=true;onDone();};
+  sim=me;return me;
+}
+function closeStage(){if(sim){sim.alive=false;sim.offs.forEach(f=>f());sim=null;}}
+function sp(html,x,y,cls){
+  const d=document.createElement('div');d.className='sp '+(cls||'');d.innerHTML=html;sim.st.appendChild(d);
+  d.rot=0;d.sc=1;d.fx=1;
+  d.at=(x,y)=>{d.x=x;d.y=y;d.style.transform=`translate(${x}px,${y}px) translate(-50%,-50%) rotate(${d.rot}deg) scale(${d.sc*d.fx},${d.sc})`;return d;};
+  return d.at(x,y);
+}
+function box(cls,x,y,w,h,parent){
+  const d=document.createElement('div');d.className=cls;
+  d.style.cssText=`position:absolute;left:${x}px;top:${y}px;width:${w}px;height:${h}px`;
+  (parent||sim.st).appendChild(d);return d;
+}
+function svg(inner,cls){
+  const d=document.createElement('div');d.className='sv '+(cls||'');
+  d.innerHTML=`<svg viewBox="0 0 ${SW} ${SH}" width="${SW}" height="${SH}">${inner}</svg>`;
+  sim.st.appendChild(d);return d.firstChild;
+}
+const em=(e,size)=>`<span class="em" style="font-size:${size}px">${e}</span>`;
+function pt(e){const r=sim.st.getBoundingClientRect(),k=r.width/SW;return {x:(e.clientX-r.left)/k,y:(e.clientY-r.top)/k};}
+function drag(d,o){
+  o=o||{};
+  d.addEventListener('pointerdown',e=>{
+    if(d.locked||d.held||!sim)return;
+    e.preventDefault();try{d.setPointerCapture(e.pointerId);}catch(_){}
+    const p=pt(e),ox=d.x-p.x,oy=d.y-p.y;d.held=true;d.classList.add('held');d.style.transition='';
+    if(o.start)o.start(d);
+    const mv=ev=>{
+      if(!sim)return;
+      const q=pt(ev);let x=Math.max(20,Math.min(SW-20,q.x+ox)),y=Math.max(20,Math.min(SH-20,q.y+oy));
+      if(o.axis==='x')y=d.y;if(o.axis==='y')x=d.x;
+      if(o.clamp)[x,y]=o.clamp(x,y);
+      d.at(x,y);if(o.move)o.move(d,x,y);
+    };
+    const up=()=>{
+      d.held=false;d.classList.remove('held');
+      d.removeEventListener('pointermove',mv);d.removeEventListener('pointerup',up);d.removeEventListener('pointercancel',up);
+      if(sim&&o.end)o.end(d);
+    };
+    d.addEventListener('pointermove',mv);d.addEventListener('pointerup',up);d.addEventListener('pointercancel',up);
+  });
+}
+function glide(d,x,y,ms){
+  ms=ms||350;d.style.transition=`transform ${ms}ms cubic-bezier(.3,1.3,.5,1)`;d.at(x,y);
+  setTimeout(()=>{if(!d.held)d.style.transition='';},ms+30);
+}
+function loop(fn){
+  const me=sim;let t0=performance.now();
+  (function f(t){if(!me.alive)return;const dt=Math.min(0.05,Math.max(0,(t-t0)/1000));t0=t;fn(dt,t/1000);requestAnimationFrame(f);})(t0);
+}
+function later(ms,fn){const me=sim;setTimeout(()=>{if(me.alive)fn();},ms);}
+const now=()=>performance.now()/1000;
+function mixHex(a,b,p){
+  const h=s=>[1,3,5].map(i=>parseInt(s.slice(i,i+2),16)),x=h(a),y=h(b);
+  return 'rgb('+x.map((v,i)=>Math.round(v+(y[i]-v)*p)).join(',')+')';
+}
+const FLOOR=y=>`<line x1="30" y1="${y}" x2="970" y2="${y}" stroke="#1C2541" stroke-width="6" stroke-linecap="round"/>`;
+
+/* ───────── 실험 무대 13종 ───────── */
+const SIM={};
+
+/* 물통: 물건을 넣으면 뜨거나 가라앉는다 */
+SIM.tank=c=>{
+  const L=380,Rr=950,T=110,B=520,surf=210;
+  box('water',L+6,surf,Rr-L-12,B-surf-6).style.background=c.liquid||'';
+  const wb=sim.st.querySelector('.water');
+  if(c.soda)for(let i=0;i<16;i++){
+    const b=box('fizz',L+30+Math.random()*(Rr-L-70),B-24,10,10);
+    b.style.animationDelay=(-Math.random()*3)+'s';b.style.animationDuration=(2+Math.random()*2)+'s';
+  }
+  box('waterfront',L+6,surf,Rr-L-12,B-surf-6);box('tank',L,T,Rr-L,B-T);
+  let salt=0,salty=false;
+  const n=c.items.length+(c.salt?1:0),ys=n===1?[300]:n===2?[190,400]:[130,290,450];
+  const items=c.items.map((it,i)=>{
+    const size=it.s||100;
+    const d=sp((it.blob?`<i class="blob" style="background:${it.blob};width:${size}px;height:${size}px"></i>`:em(it.e,size))+(it.n?`<small>${it.n}</small>`:''),190,ys[i],'obj');
+    d.it=it;d.size=size;d.hy=ys[i];d.vy=0;d.inW=false;
+    drag(d,{start(){d.vy=0;},end(){
+      if(d.x>L+30&&d.x<Rr-30&&d.y>T-60){d.inW=true;d.t0=now();d.at(Math.max(L+12+size/2,Math.min(Rr-12-size/2,d.x)),d.y);}
+      else{d.inW=false;glide(d,190,d.hy);}
+    }});
+    return d;
+  });
+  let lab=null;
+  if(c.salt){
+    const sy=ys[n-1],sh=sp(em('🧂',96)+'<small>소금</small>',190,sy,'obj');
+    lab=sp('<small></small>',(L+Rr)/2,T+34,'count');
+    drag(sh,{end(){
+      if(sh.x>L&&sh.x<Rr&&sh.y>T-80){
+        salt++;for(let i=0;i<10;i++){const g=box('grain',sh.x-30+Math.random()*60,sh.y+30,9,9);g.style.animationDelay=(i*0.04)+'s';later(1100,()=>g.remove());}
+        tone(900,.08,'triangle',.1);
+        if(salt>=3&&!salty){salty=true;wb.style.background='#BFD9E6';tone(660,.3,'triangle',.2,.2);}
+        lab.firstChild.textContent=salty?'짭짤한 소금물이 됐어!':`소금 ${salt}번`;
+      }
+      glide(sh,190,sy);
+    }});
+  }
+  loop((dt,t)=>{
+    let all=true;
+    items.forEach((d,i)=>{
+      if(!d.inW){all=false;return;}
+      let f=d.it.f;if(f==='salt')f=salty?'float':'sink';
+      const bottom=B-12-d.size*0.5,top=surf+d.size*0.14+Math.sin(t*2+i)*4;
+      let target=f==='sink'?bottom:top;
+      if(f==='dance'){const ph=(t-d.t0+i*0.7)%5;target=ph<1.8?bottom:ph<4?top:bottom;}
+      if(!d.held){
+        if(d.y<surf-d.size*0.4)d.vy+=1700*dt;
+        else d.vy+=((target-d.y)*26-d.vy*5.5)*dt;
+        let y=d.y+d.vy*dt;if(y>bottom){y=bottom;d.vy=0;}
+        d.at(d.x,y);
+      }
+      if(d.it.f==='dance'){if(t-d.t0>5)d.ok=true;}
+      else if(d.it.f==='salt'){if(salty&&Math.abs(d.y-top)<16&&!d.held)d.ok=true;}
+      else if(Math.abs(d.y-target)<16&&Math.abs(d.vy)<40&&!d.held&&t-d.t0>0.6)d.ok=true;
+      if(!d.ok)all=false;
+    });
+    if(all)sim.finish();
+  });
+};
+
+/* 물감 섞기: 접시에 두 색을 넣고 붓으로 젓는다 */
+SIM.stir=c=>{
+  const cx=610,cy=285,r=205;
+  const plate=box('plate',cx-r,cy-r,2*r,2*r),paint=box('paintmix',14,14,2*r-40,2*r-40,plate);
+  paint.style.opacity=0;
+  let inA=false,inB=false,p=0,ang=0,last=null;
+  const draw=()=>{
+    const A=inA?mixHex(c.a,c.m,p):'transparent',Bc=inB?mixHex(c.b,c.m,p):'transparent';
+    paint.style.opacity=1;paint.style.background=`conic-gradient(from ${ang}deg,${A} 0 50%,${Bc} 50% 100%)`;paint.style.filter=`blur(${5+p*8}px)`;
+  };
+  [[c.a,150,'a'],[c.b,310,'b']].forEach(([col,y,key])=>{
+    const d=sp(`<i class="blob" style="background:${col};width:112px;height:112px"></i>`,160,y,'obj');
+    drag(d,{end(){
+      if(Math.hypot(d.x-cx,d.y-cy)<r+20){d.remove();if(key==='a')inA=true;else inB=true;tone(520,.12,'triangle',.15);draw();}
+      else glide(d,160,y);
+    }});
+  });
+  const brush=sp(em('🖌️',116),160,470,'obj up');
+  drag(brush,{start(){last=null;},move(d,x,y){
+    const tx=x-42,ty=y+42;
+    if(inA&&inB&&Math.hypot(tx-cx,ty-cy)<r){
+      if(last){const dd=Math.hypot(tx-last.x,ty-last.y);p=Math.min(1,p+dd/2400);ang+=dd*0.3;draw();if(p>=1)sim.finish();}
+      last={x:tx,y:ty};
+    }else last=null;
+  },end(){last=null;}});
+};
+
+/* 베이킹소다와 식초: 화산 거품 또는 풍선 */
+SIM.react=c=>{
+  const vx=620,foam=c.mode==='foam',my=foam?250:190;
+  let bal=null;
+  if(foam){
+    svg(`<path d="M${vx-70} 250 H${vx+70} L${vx+215} 520 H${vx-215} Z" fill="#9C6B4E" stroke="#1C2541" stroke-width="6" stroke-linejoin="round"/>
+      <ellipse cx="${vx}" cy="250" rx="70" ry="16" fill="#5B3A2E" stroke="#1C2541" stroke-width="6"/>`);
+  }else{
+    const s=svg(`<ellipse id="bal" cx="${vx}" cy="160" rx="24" ry="30" fill="#F25C54" stroke="#1C2541" stroke-width="6"/>
+      <path d="M${vx-30} 190 H${vx+30} V270 Q${vx+85} 290 ${vx+85} 340 V500 Q${vx+85} 520 ${vx+65} 520 H${vx-65} Q${vx-85} 520 ${vx-85} 500 V340 Q${vx-85} 290 ${vx-30} 270 Z" fill="#E7F6FB" stroke="#1C2541" stroke-width="6" stroke-linejoin="round"/>
+      <rect x="${vx-80}" y="430" width="160" height="84" rx="14" fill="#FFE08A"/>`);
+    bal=s.querySelector('#bal');
+  }
+  const got={};
+  [['🥄','베이킹소다','soda'],['🍶','식초','vin']].forEach(([e,nm,k],i)=>{
+    const hy=170+i*210,d=sp(em(e,112)+`<small>${nm}</small>`,170,hy,'obj');
+    drag(d,{end(){
+      if(Math.abs(d.x-vx)<200&&d.y<my+170){
+        got[k]=1;d.locked=true;d.classList.add('used');
+        for(let j=0;j<9;j++){const g=box(k==='soda'?'grain':'dropv',vx-22+Math.random()*44,my-110,11,11);g.style.animationDelay=(j*0.05)+'s';later(1200,()=>g.remove());}
+        tone(700,.1,'triangle',.12);glide(d,170,hy);
+        if(got.soda&&got.vin)later(600,go);
+      }else glide(d,170,hy);
+    }});
+  });
+  function go(){
+    const t0=now();tone(160,.9,'sawtooth',.05);
+    loop((dt,t)=>{
+      const el=t-t0;
+      if(foam){
+        if(el<6&&Math.random()<0.2){
+          const s=28+Math.random()*44,b=box('foam',vx-s/2-26+Math.random()*52,my-s/2,s,s);
+          b.style.setProperty('--dx',(Math.random()<0.5?-1:1)*(50+Math.random()*150)+'px');
+          b.style.setProperty('--up',-(30+Math.random()*100)+'px');later(2700,()=>b.remove());
+        }
+      }else{
+        const k=Math.min(1,el/3.2),rx=24+k*72,ry=30+k*56;
+        bal.setAttribute('rx',rx);bal.setAttribute('ry',ry);bal.setAttribute('cy',190-ry);
+        if(el<4&&Math.random()<0.3){const g=box('fizz',vx-60+Math.random()*120,490,10,10);g.style.animationDuration='1.2s';g.style.animationIterationCount='1';later(700,()=>g.remove());}
+      }
+    });
+    later(foam?2600:3400,sim.finish);
+  }
+};
+
+/* 미끄럼틀: 높이를 바꾸거나 길에 수건을 깐다 */
+SIM.ramp=c=>{
+  const gx=150,ex=450,gy=480,HM=c.mode==='height';
+  let h=HM?90:170,towel=false,running=false;const runs={},flags=[];
+  const s=svg(FLOOR(gy)+`<polygon id="rp" fill="#F2B279" stroke="#1C2541" stroke-width="6" stroke-linejoin="round"/>`);
+  const rp=s.querySelector('#rp'),zone=sp('',0,0,'zone');
+  const car=sp(em('🚗',92),ex+150,gy-42,'obj up');car.fx=-1;car.at(car.x,car.y);
+  let book=null,tw=null;
+  const draw=()=>{rp.setAttribute('points',`${gx},${gy} ${gx},${gy-h} ${ex},${gy}`);zone.at(gx+52,gy-h-34);if(book&&!book.held)book.at(gx-62,gy-h+10);};
+  if(HM){
+    book=sp(em('📚',84)+'<small>↕ 높이</small>',gx-62,gy-h+10,'obj');
+    drag(book,{axis:'y',clamp:(x,y)=>[x,Math.max(gy-250,Math.min(gy-60,y))],move(d,x,y){if(!running){h=gy-y+10;draw();}}});
+  }else{
+    tw=sp('<i class="towel"></i><small>수건</small>',720,90,'obj pad');
+    drag(tw,{end(){
+      if(tw.y>gy-170){towel=true;glide(tw,720,gy-2);tw.lastChild.style.visibility='hidden';}
+      else{towel=false;glide(tw,720,90);tw.lastChild.style.visibility='';}
+    }});
+  }
+  draw();
+  drag(car,{start(){car.rot=0;},end(){
+    if(running)return;
+    if(Math.hypot(car.x-zone.x,car.y-zone.y)<150)run();
+    else glide(car,Math.max(ex+60,car.x),gy-42);
+  }});
+  let rs=null;
+  function run(){
+    running=true;car.locked=true;if(book)book.locked=true;if(tw)tw.locked=true;
+    const sx=gx+50,sy=gy-h+(50*h/(ex-gx))-40;
+    rs={sx,sy,t0:now(),D:HM?40+h*1.72:(towel?150:470),T1:0.95-h*0.0012};rs.T2=0.5+rs.D/420;
+    car.rot=Math.atan2(h,ex-gx)*180/Math.PI;car.at(sx,sy);tone(140+h,.5,'sawtooth',.04);
+  }
+  loop((dt,t)=>{
+    if(!rs)return;
+    const el=t-rs.t0;
+    if(el<rs.T1){const u=(el/rs.T1)*(el/rs.T1);car.at(rs.sx+(ex-rs.sx)*u,rs.sy+(gy-42-rs.sy)*u);return;}
+    car.rot=0;const u=Math.min(1,(el-rs.T1)/rs.T2),x=ex+rs.D*(1-(1-u)*(1-u));car.at(x,gy-42);
+    if(u>=1){
+      rs=null;running=false;car.locked=false;if(book)book.locked=false;if(tw)tw.locked=false;
+      const f=sp(em('🚩',54),x+10,gy-36,'flag');flags.push(f);if(flags.length>4)flags.shift().remove();
+      tone(880,.15,'triangle',.15);
+      if(HM){if(h<140)runs.lo=1;if(h>190)runs.hi=1;}else runs[towel?'t':'f']=1;
+      if(HM?(runs.lo&&runs.hi):(runs.t&&runs.f))later(500,sim.finish);
+    }
+  });
+};
+
+/* 그림자: 손전등을 움직이면 벽의 그림자 크기가 바뀐다 */
+SIM.shadow=c=>{
+  const toyX=560,wx=740,fy=480,cxw=wx+125;
+  const wall=box('wall',wx,30,250,fy-30),sh=document.createElement('div');
+  sh.className='shade';sh.textContent='🧸';wall.appendChild(sh);
+  const s=svg(`<polygon id="bm" fill="#FFE98A" opacity=".5"/><line x1="30" y1="${fy}" x2="970" y2="${fy}" stroke="#FFFDF5" stroke-width="6" stroke-linecap="round"/>`);
+  const bm=s.querySelector('#bm');
+  sp(em('🧸',100),toyX,fy-52,'');
+  const light=sp('<i class="torch"></i>',130,fy-56,'obj up pad');
+  let near=false,far=false;
+  const upd=()=>{
+    const lx=light.x+75,k=(cxw-lx)/(toyX-lx),hgt=108*k;
+    sh.style.transform=`scale(${k})`;
+    bm.setAttribute('points',`${lx},${light.y} ${wx},${Math.max(34,fy-hgt-14)} ${wx},${fy}`);
+    if(light.x>320)near=true;if(light.x<170)far=true;if(near&&far)sim.finish();
+  };
+  drag(light,{axis:'x',clamp:(x,y)=>[Math.max(100,Math.min(370,x)),y],move:upd});upd();
+};
+
+/* 연필: 물속에 들어간 부분이 어긋나 보인다 */
+SIM.pencil=c=>{
+  const gl={x:400,y:140,w:330,h:380},wy=250,P='<i class="pencil"></i>';
+  const pen=sp(P,170,260,'obj low pad');pen.rot=18;pen.at(170,260);
+  const water=box('lenswater',gl.x+6,wy,gl.w-12,gl.y+gl.h-wy-6),ghost=document.createElement('div');
+  ghost.className='sp';ghost.innerHTML=P;water.appendChild(ghost);
+  box('glass',gl.x,gl.y,gl.w,gl.h);
+  let seen=false;
+  const upd=()=>{
+    ghost.style.transform=`translate(${pen.x-(gl.x+6)+40}px,${pen.y-wy}px) translate(-50%,-50%) rotate(18deg) scaleX(1.3)`;
+    if(!seen&&pen.x>gl.x+70&&pen.x<gl.x+gl.w-30&&pen.y+160>wy+110){seen=true;tone(520,.15,'triangle',.15);later(1400,sim.finish);}
+  };
+  drag(pen,{clamp:(x,y)=>[x,Math.min(350,y)],move:upd,end:upd});upd();
+};
+
+/* 화살표: 물컵 너머로 보면 좌우가 바뀐다 */
+SIM.arrow=c=>{
+  const ax=420,ay=285,A='<i class="arrow"></i>',W=228,H=328;
+  box('sheet',ax-190,ay-150,380,300);sp(A,ax,ay,'');
+  const g=sp('<div class="lensglass"><i class="gsheet"></i></div>',840,300,'obj up'),lg=g.firstChild,gs=lg.firstChild,gh=document.createElement('div');
+  gh.className='sp';gh.innerHTML=A;lg.appendChild(gh);
+  let seen=false;
+  const upd=()=>{
+    const rx=ax-g.x,ry=ay-g.y,mx=W/2-rx,my=H/2+ry;
+    gh.style.transform=`translate(${mx}px,${my}px) translate(-50%,-50%) scaleX(-1)`;
+    gs.style.transform=`translate(${mx-190}px,${my-150}px)`;
+    if(!seen&&Math.hypot(rx,ry)<60){seen=true;tone(520,.15,'triangle',.15);later(1400,sim.finish);}
+  };
+  drag(g,{move:upd,end:upd});upd();
+};
+
+/* 끌어당기기: 자석, 그리고 문지른 풍선 */
+SIM.attract=c=>{
+  const tool=sp(em(c.tool,124),150,190,'obj up');
+  let charge=c.rub?0:1,rubbed=0,px=tool.x,meter=null;
+  if(c.rub){sp(em('🧒',180),830,170,'');meter=sp('',150,70,'meter');}
+  const n=c.objs.length;
+  const objs=c.objs.map((o,i)=>{
+    const x=o.x||(360+i*(520/Math.max(1,n-1))),y=o.y||440;
+    const d=sp(o.bit?'<i class="bit"></i>':em(o.e,o.s||96),x,y,'');d.o=o;d.hx=x;d.hy=y;return d;
+  });
+  drag(tool,{move(d,x,y){
+    if(c.rub&&charge<1&&Math.hypot(x-830,y-150)<170){
+      rubbed+=Math.abs(x-px);charge=Math.min(1,rubbed/900);meter.textContent='⚡'.repeat(Math.ceil(charge*3));
+      if(charge>=1){tool.classList.add('glow');tone(880,.3,'triangle',.2);}
+    }
+    px=x;if(meter)meter.at(x,y-110);
+  }});
+  loop((dt,t)=>{
+    let all=true,stuck=0;
+    objs.forEach(d=>{
+      if(d.stuck){d.at(d.x+(tool.x+d.ox-d.x)*0.35,d.y+(tool.y+d.oy-d.y)*0.35);stuck++;return;}
+      const dist=Math.hypot(tool.x-d.x,tool.y+c.oy-d.y);
+      if(d.o.pull){
+        if(charge>=1&&dist<170){d.stuck=true;d.ox=(Math.random()-0.5)*76;d.oy=c.oy+(Math.random()-0.5)*40;d.style.zIndex=9;tone(1200,.07,'square',.06);}
+        else all=false;
+      }else if(dist<120){d.tested=true;d.classList.add('nope');d.at(d.hx+Math.sin(t*38)*3,d.hy);}
+      else if(!d.tested)all=false;
+    });
+    if(c.rub?stuck>=5:all)sim.finish();
+  });
+};
+
+/* 종이 떨어뜨리기: 받침대를 빼면 둘이 같이 떨어진다 */
+SIM.fall=c=>{
+  const ty=120,gy=500;svg(FLOOR(gy));
+  const flat=sp('<i class="sheetflat"></i>',380,ty-24,''),ball=sp('<i class="crumple"></i>',620,ty-48,'');
+  const tray=sp('<i class="tray"></i><small>옆으로 쏙!</small>',500,ty+16,'obj pad');
+  let state='ready',t0=0,medal=null;
+  drag(tray,{axis:'x',clamp:(x,y)=>[Math.max(200,Math.min(800,x)),y],move(d,x){
+    if(state==='ready'&&Math.abs(x-500)>190){state='fall';t0=now();tone(500,.1,'triangle',.12);}
+  },end(){
+    if(state==='ready')glide(tray,500,ty+16);
+    else if(state==='landed'){
+      state='ready';if(medal){medal.remove();medal=null;}
+      flat.rot=0;glide(flat,380,ty-24);glide(ball,620,ty-48);glide(tray,500,ty+16);
+    }
+  }});
+  loop((dt,t)=>{
+    if(state!=='fall')return;
+    const el=t-t0,by=Math.min(gy-36,ty-48+0.5*1500*el*el),fyy=Math.min(gy-10,ty-24+155*el);
+    if(by>=gy-36&&!medal){medal=sp(em('🥇',60),620,gy-110,'flag');tone(880,.2,'triangle',.2);}
+    ball.at(620,by);
+    if(fyy<gy-10){flat.rot=Math.sin(el*4)*14;flat.at(380+Math.sin(el*4)*52,fyy);}
+    else{flat.rot=0;flat.at(flat.x,gy-10);state='landed';tone(440,.2,'triangle',.15);later(500,sim.finish);}
+  });
+};
+
+/* 접시 위 알갱이: 세제가 닿으면 바깥으로 달아난다 */
+SIM.scatter=c=>{
+  const cx=570,cy=285,r=228,ps=[];
+  box('plate '+(c.milk?'milk':'dish'),cx-r,cy-r,2*r,2*r);
+  const mk=(x,y,col,s)=>{const d=sp(`<i class="dot ${c.milk?'mdot':''}" style="width:${s}px;height:${s}px;background:${col}"></i>`,x,y,'');d.vx=d.vy=0;ps.push(d);};
+  if(c.milk)['#F25C54','#3FA7F5','#FFCE3A','#3DBE7B'].forEach((col,k)=>{
+    const a0=k*Math.PI/2+0.6;
+    for(let i=0;i<24;i++){const rr=Math.random()*40,a=Math.random()*7;mk(cx+Math.cos(a0)*62+Math.cos(a)*rr,cy+Math.sin(a0)*62+Math.sin(a)*rr,col,22+Math.random()*18);}
+  });
+  else for(let i=0;i<90;i++){const a=Math.random()*7,rr=Math.sqrt(Math.random())*190;mk(cx+Math.cos(a)*rr,cy+Math.sin(a)*rr,'#3B2F2F',5+Math.random()*6);}
+  const tool=c.milk?sp('<i class="swab"></i>',130,280,'obj up pad'):sp(em('👆',116),130,330,'obj up soapy');
+  let fired=0,touching=false;
+  const tip=()=>c.milk?{x:tool.x,y:tool.y+85}:{x:tool.x,y:tool.y-50};
+  function fire(p){
+    const pow=fired?0.2:1;fired++;
+    ps.forEach(d=>{
+      const dx=d.x-p.x,dy=d.y-p.y,Ln=Math.hypot(dx,dy)||1,v=(c.milk?380:680)*pow*(c.milk?0.25+Math.random():0.55+Math.random()*0.7);
+      d.vx+=dx/Ln*v-(c.milk?dy/Ln*v*0.55:0);d.vy+=dy/Ln*v+(c.milk?dx/Ln*v*0.55:0);
+    });
+    if(fired===1){tone(600,.25,'triangle',.18);tone(900,.3,'triangle',.14,.1);later(1900,sim.finish);}
+  }
+  // 가운데 가까이 오면 바로, 아니면 접시 안에서 손을 뗄 때 세제가 닿는다
+  const touch=lim=>{const p=tip();if(Math.hypot(p.x-cx,p.y-cy)<lim){if(!touching){touching=true;fire(p);}}else touching=false;};
+  drag(tool,{move(){touch(r*0.4);},end(){touch(r-30);touching=false;}});
+  loop(dt=>{
+    const fr=Math.pow(c.milk?0.1:0.03,dt),lim=r-24;
+    ps.forEach(d=>{
+      if(Math.abs(d.vx)+Math.abs(d.vy)<3)return;
+      let x=d.x+d.vx*dt,y=d.y+d.vy*dt;const Ln=Math.hypot(x-cx,y-cy);
+      if(Ln>lim){x=cx+(x-cx)/Ln*lim;y=cy+(y-cy)/Ln*lim;d.vx*=0.2;d.vy*=0.2;}
+      d.vx*=fr;d.vy*=fr;d.at(x,y);
+    });
+  });
+};
+
+/* 숨은 그림: 물감을 칠하면 흰 크레파스 그림이 드러난다 */
+SIM.reveal=c=>{
+  const X=270,Y=60,W=640,H=440,cv=document.createElement('canvas');
+  cv.width=W;cv.height=H;cv.className='paperc';cv.style.cssText=`position:absolute;left:${X}px;top:${Y}px`;sim.st.appendChild(cv);
+  const g=cv.getContext('2d');g.lineCap='round';g.lineJoin='round';g.lineWidth=74;g.strokeStyle='rgba(63,167,245,.9)';
+  let star='';for(let i=0;i<10;i++){const a=-Math.PI/2+i*Math.PI/5,rr=i%2?58:135;star+=(i?'L':'M')+(190+Math.cos(a)*rr).toFixed(0)+' '+(225+Math.sin(a)*rr).toFixed(0)+' ';}
+  svg(`<g transform="translate(${X},${Y})" fill="none" stroke="#fff" stroke-width="13" stroke-linecap="round" stroke-linejoin="round">
+    <path d="${star}Z"/><circle cx="465" cy="225" r="115"/><path d="M415 255 Q465 310 515 255"/>
+    <path d="M425 190 v12 M505 190 v12"/></g>`,'over');
+  const brush=sp(em('🖌️',124),140,300,'obj up');
+  const cells=new Set();let last=null;
+  drag(brush,{start(){last=null;},move(d,x,y){
+    const tx=x-46-X,ty=y+46-Y;
+    if(tx>0&&tx<W&&ty>0&&ty<H){
+      g.beginPath();g.moveTo(last?last.x:tx,last?last.y:ty);g.lineTo(tx+0.1,ty);g.stroke();
+      last={x:tx,y:ty};cells.add(Math.floor(tx/80)+'_'+Math.floor(ty/88));
+      if(cells.size>=22)sim.finish();
+    }else last=null;
+  },end(){last=null;}});
+};
+
+/* 물컵 실로폰: 물이 많을수록 낮은 소리 */
+SIM.xylo=c=>{
+  const cups=[{x:320,lv:0.22,f:880,ic:'🐦'},{x:560,lv:0.55,f:660},{x:800,lv:0.9,f:440,ic:'🐻'}],hits=new Set();
+  function hit(k){
+    tone(k.f,1.1,'sine',.3);tone(k.f*2.01,.5,'sine',.07);
+    k.el.classList.remove('ring');void k.el.offsetWidth;k.el.classList.add('ring');
+    if(k.ic){const s=sp(em(k.ic,74),k.x,150,'pop2');later(900,()=>s.remove());}
+    hits.add(k);if(hits.size===3)later(900,sim.finish);
+  }
+  cups.forEach(k=>{
+    k.el=box('cup',k.x-85,210,170,280);
+    const w=document.createElement('div');w.className='cupw';w.style.cssText=`position:absolute;left:0;right:0;bottom:0;height:${k.lv*100}%`;k.el.appendChild(w);
+    k.el.addEventListener('pointerdown',()=>hit(k));
+  });
+  const spoon=sp(em('🥄',112),130,130,'obj up');let inside=null;
+  drag(spoon,{move(d,x,y){
+    const k=cups.find(k=>Math.abs(x-k.x)<100&&y>190&&y<510)||null;
+    if(k&&k!==inside)hit(k);inside=k;
+  },end(){inside=null;}});
+};
+
+/* 고무줄 기타: 팽팽할수록 높은 소리 */
+SIM.band=c=>{
+  const ax=190,y0=290;
+  box('gbox',120,170,530,240);
+  const s=svg(`<path id="bd" fill="none" stroke="#F25C54" stroke-linecap="round"/>`,'over'),path=s.querySelector('#bd');
+  sp('<i class="peg"></i>',ax,y0,'');
+  const peg=sp('<i class="peg knob"></i><small>↔ 팽팽하게</small>',700,y0+18,'obj up pad');
+  const grip=sp('<i class="grip"></i>',(ax+700)/2,y0,'obj up');
+  let pull=0,vib=null,loose=false,tight=false;
+  const ten=()=>(peg.x-700)/200;
+  drag(peg,{axis:'x',clamp:(x,y)=>[Math.max(700,Math.min(900,x)),y]});
+  drag(grip,{axis:'y',clamp:(x,y)=>[x,Math.max(y0-120,Math.min(y0+120,y))],start(){vib=null;pull=0;},move(d,x,y){pull=y-y0;},end(){
+    if(Math.abs(pull)>18){
+      const T=ten(),f=165+T*330;vib={amp:pull,t0:now()};tone(f,1.2,'triangle',.3);tone(f*2,.4,'sine',.08);
+      const ic=sp(em(T>0.6?'🐦':T<0.35?'🐻':'🎵',70),grip.x,y0-150,'pop2');later(900,()=>ic.remove());
+      if(T<0.3)loose=true;if(T>0.7)tight=true;if(loose&&tight)later(1100,sim.finish);
+    }
+    pull=0;
+  }});
+  loop((dt,t)=>{
+    const mx=(ax+peg.x)/2;let off=grip.held?pull:0;
+    if(vib){const el=t-vib.t0;off=vib.amp*Math.exp(-el*3)*Math.cos(el*(16+ten()*34));if(el>1.7)vib=null;}
+    if(!grip.held)grip.at(mx,y0+off);else grip.at(mx,grip.y);
+    path.setAttribute('d',`M${ax} ${y0} Q${mx} ${y0+off*2} ${peg.x} ${y0}`);path.setAttribute('stroke-width',15-ten()*9);
+  });
+};
+
+/* 풍선 로켓: 누르고 있으면 커지고, 떼면 날아간다 */
+SIM.rocket=c=>{
+  const hx=150,hy=410,gy=500;svg(FLOOR(gy));
+  const b=sp(em('🎈',112),hx,hy,'obj up');b.sc=0.6;b.at(hx,hy);
+  let state='idle',size=0.6,fl=null;const flags=[];
+  b.addEventListener('pointerdown',e=>{if(state!=='idle')return;e.preventDefault();try{b.setPointerCapture(e.pointerId);}catch(_){}state='blow';});
+  const rel=()=>{if(state!=='blow')return;if(size<0.85){state='idle';return;}state='fly';fl={t0:now(),pow:size};tone(320,.6,'sawtooth',.05);};
+  b.addEventListener('pointerup',rel);b.addEventListener('pointercancel',rel);
+  loop((dt,t)=>{
+    if(state==='blow'){size=Math.min(2.2,size+dt*0.75);b.sc=size;b.at(hx+Math.sin(t*30)*1.5,hy-(size-0.6)*42);}
+    else if(state==='idle'&&size>0.6){size=Math.max(0.6,size-dt*2);b.sc=size;b.at(hx,hy);}
+    else if(state==='fly'){
+      const el=t-fl.t0,dur=0.6+fl.pow*0.8,u=Math.min(1,el/dur),dist=80+(fl.pow-0.6)/1.6*690;
+      const x=hx+dist*(1-(1-u)*(1-u)),y=hy-Math.sin(u*Math.PI)*(110+fl.pow*60)+Math.sin(el*18)*16*(1-u);
+      size=fl.pow-(fl.pow-0.6)*u;b.sc=size;b.rot=90;b.at(x,y);
+      if(Math.random()<0.45&&u<0.9){const p=sp(em('💨',40),x-60,y,'pop2');later(600,()=>p.remove());}
+      if(u>=1){
+        state='land';b.rot=0;b.at(x,hy);
+        const f=sp(em('🚩',54),x,gy-36,'flag');flags.push(f);if(flags.length>4)flags.shift().remove();
+        tone(880,.15,'triangle',.15);sim.finish();
+        later(1300,()=>{size=0.6;b.sc=0.6;b.at(hx,hy);state='idle';});
+      }
+    }
+  });
+};
+
+/* 종이 다리: 평평한 종이와 접은 종이에 블록 올리기 */
+SIM.bridge=c=>{
+  const dy=300,gy=510;
+  const br=[{x:250,cap:1,n:0,flat:1,its:[]},{x:750,cap:9,n:0,its:[]}];
+  let zig='';for(let i=0;i<=14;i++)zig+=(750-175+i*25)+','+(i%2?dy-28:dy)+' ';
+  svg(FLOOR(gy)+`<polyline points="${zig}" fill="none" stroke="#1C2541" stroke-width="12" stroke-linejoin="round" stroke-linecap="round"/>
+    <polyline points="${zig}" fill="none" stroke="#fff" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>`);
+  br.forEach(b=>{
+    box('pier',b.x-185,dy,62,gy-dy);box('pier',b.x+123,dy,62,gy-dy);
+    if(b.flat)b.el=box('deck',b.x-180,dy-10,360,12);
+    b.lab=sp('<small>0개</small>',b.x,170,'count');
+  });
+  ['#F25C54','#3FA7F5','#3DBE7B','#8C6BE8','#FF9F1C','#FF7AA8','#35B8C9'].forEach((col,i)=>{
+    const hx=215+i*95,d=sp(`<i class="blk" style="background:${col}"></i>`,hx,70,'obj');
+    drag(d,{end(){
+      const b=br.find(b=>Math.abs(d.x-b.x)<170&&d.y>110);
+      if(!b){glide(d,hx,70);return;}
+      d.locked=true;
+      if(b.broken){glide(d,d.x,gy-36,300);return;}
+      b.n++;
+      if(b.n>b.cap){
+        b.broken=true;b.el.classList.remove('sag');b.el.classList.add('broken');b.lab.firstChild.textContent='와르르!';sfxBad();
+        b.its.concat(d).forEach((q,j)=>{q.style.transition='transform .45s ease-in';q.at(b.x-60+j*110,gy-36);});
+      }else{
+        const top=b.flat?dy-8:dy-32,j=b.n-1;
+        glide(d,b.x-68+(j%3)*68,top-33-Math.floor(j/3)*64,250);b.its.push(d);
+        if(b.flat)b.el.classList.add('sag');
+        b.lab.firstChild.textContent=b.n+'개';tone(500+b.n*60,.12,'triangle',.15);
+      }
+      if(br[0].broken&&br[1].n>=3)later(700,sim.finish);
+    }});
+  });
+};
+
 /* ───────── 화면 ───────── */
 const app=document.getElementById('app');
 let R=null;          // 지금 하고 있는 실험
@@ -546,18 +1078,15 @@ function flowTop(i){
     <div class="grow"><div class="dots" aria-label="${STEP_LABELS[i]} 단계">${STEP_LABELS.map((_,k)=>`<i class="${k<i?'on':k===i?'now':''}"></i>`).join('')}</div></div>
     <button class="round" data-act="again" aria-label="다시 듣기">🔊</button></div>`;
 }
-function optsHTML(act,sel){
-  return `<div class="opts">${R.order.map(i=>`<button class="opt ${sel===i?'sel':''}" data-act="${act}" data-i="${i}"><b>${R.card.o[i][0]}</b>${R.card.o[i][1]}</button>`).join('')}</div>`;
-}
 
 const V={
 home(){
   const c=nextCard(),n=doneCount(),can=c&&doneToday()<allowedToday();
-  let line,foot;
-  if(!c){line=`${callName()}실험을 전부 해냈어! 도감에서 좋아하는 실험을 또 해 봐.`;}
-  else if(can){line=`${callName()}오늘의 실험이 도착했어!`;}
-  else{line=`${callName()}오늘 실험 끝! 내일 새 실험이 와.`;}
-  foot=can?`<button class="btn" data-act="start">실험 시작</button><button class="btn plain" data-act="dex">📒 내 도감 ${n}</button>`
+  let line;
+  if(!c)line=`${callName()}실험을 전부 해냈어! 도감에서 좋아하는 실험을 또 해 봐.`;
+  else if(can)line=`${callName()}짜잔~ 오늘의 실험이 도착했어!`;
+  else line=`${callName()}오늘 실험 끝! 내일 또 새 실험 하자!`;
+  const foot=can?`<button class="btn" data-act="start">실험 시작</button><button class="btn plain" data-act="dex">📒 내 도감 ${n}</button>`
           :`<button class="btn" data-act="dex">📒 내 도감 ${n}</button>`;
   app.innerHTML=`<div class="top"><button class="round" data-act="again" aria-label="다시 듣기">🔊</button><div class="grow"></div>
       <button class="round" data-hold aria-label="어른 화면, 길게 누르기">⚙️<span class="hold-hint">어른은<br>꾹 누르기</span></button></div>
@@ -568,48 +1097,47 @@ home(){
     <div class="foot">${foot}</div>`;
   say([ko(line)]);
 },
-prep(){
-  const c=R.card;
-  app.innerHTML=`${flowTop(0)}<div class="main"><div class="in" style="--cat:${CATS[c.cat].c}">
-      <h1>${c.e} ${c.t}</h1>
-      <div class="mats">${c.m.map(m=>`<div class="mat"><b>${m[0]}</b><span>${m[1]}</span></div>`).join('')}</div>
-      <div class="tip"><strong>어른에게</strong> ${c.tip}</div>
-    </div></div><div class="foot"><button class="btn" data-act="to" data-v="predict">다 모았어요</button></div>`;
-  say([ko(`${c.t} 준비물을 모아 보자. ${c.m.map(m=>m[1]).join(', ')}.`)]);
-},
 predict(){
   const c=R.card,picked=R.pred!=null;
-  app.innerHTML=`${flowTop(1)}<div class="main"><div class="in" style="--cat:${CATS[c.cat].c}">
-      <h1>${c.q}</h1>${optsHTML('pred',R.pred)}
+  app.innerHTML=`${flowTop(0)}<div class="main"><div class="in" style="--cat:${CATS[c.cat].c}">
+      <h1>${c.e} ${c.q}</h1>
+      <div class="opts">${R.order.map(i=>`<button class="opt ${R.pred===i?'sel':''}" data-act="pred" data-i="${i}"><b>${c.o[i][0]}</b>${c.o[i][1]}</button>`).join('')}</div>
     </div></div><div class="foot"><button class="btn" data-act="to" data-v="doit" ${picked?'':'disabled'}>실험하러 가기</button></div>`;
-  if(!picked)say([ko(`${c.q} 네 생각을 골라 봐.`)]);
+  if(!picked)say([ko(`${c.q} 네 생각은 뭐야? 골라 봐!`)]);
 },
 doit(){
   const c=R.card;
-  app.innerHTML=`${flowTop(2)}<div class="main"><div class="in" style="--cat:${CATS[c.cat].c}">
-      <ol class="steps">${c.s.map((s,i)=>`<li><span class="n">${i+1}</span><span>${s}</span></li>`).join('')}</ol>
-    </div></div><div class="foot"><button class="btn" data-act="to" data-v="result">실험 끝!</button></div>`;
-  const ord=['하나.','둘.','셋.','넷.'];
-  say([ko(c.s.map((s,i)=>ord[i]+' '+s).join(' ')+' 다 했으면 실험 끝 버튼을 눌러.')]);
+  app.innerHTML=`${flowTop(1)}<div class="main"><div class="in lab" style="--cat:${CATS[c.cat].c}">
+      <h2 class="how">${c.how}</h2><div class="stagebox" id="sb"></div>
+    </div></div><div class="foot"><button class="btn" id="fin" data-act="to" data-v="result" disabled>실험 끝!</button></div>`;
+  const me=openStage(document.getElementById('sb'),()=>{
+    const f=document.getElementById('fin');if(f){f.disabled=false;f.classList.add('ready');}
+    sfxGood();say([ko(['우와, 봤어?','오호~ 신기하지?','짜잔~ 봤지?'][Math.floor(Math.random()*3)]+' 더 놀아도 되고, 다 봤으면 실험 끝 버튼을 눌러!')]);
+  });
+  if(c.sim.type==='shadow')me.st.classList.add('night');
+  SIM[c.sim.type](c.sim);
+  say([ko(c.how)]);
 },
 result(){
-  const c=R.card,picked=R.res!=null;
-  app.innerHTML=`${flowTop(3)}<div class="main"><div class="in" style="--cat:${CATS[c.cat].c}">
-      <h1>어떻게 됐어? 본 대로 골라 봐</h1>${optsHTML('res',R.res)}
-    </div></div><div class="foot"><button class="btn" data-act="to" data-v="why" ${picked?'':'disabled'}>왜 그럴까?</button></div>`;
-  if(!picked)say([ko('어떻게 됐어? 눈으로 본 대로 골라 봐.')]);
+  const c=R.card,ok=R.res===c.a,miss=!ok&&R.bad.length>0;
+  app.innerHTML=`${flowTop(2)}<div class="main"><div class="in" style="--cat:${CATS[c.cat].c}">
+      <h1>${c.rq}</h1>
+      <div class="opts">${R.order.map(i=>{const no=R.bad.includes(i);
+        return `<button class="opt ${ok&&i===c.a?'sel':''} ${no?'no':''}" data-act="res" data-i="${i}" ${ok||no?'disabled':''}><b>${c.o[i][0]}</b>${c.o[i][1]}</button>`;}).join('')}</div>
+      ${ok?'<p class="retry">딩동댕~ 맞았어!</p>':miss?'<p class="retry">음~ 다시 한번 생각해 봐!</p>':''}
+    </div></div><div class="foot">${miss?'<button class="btn plain" data-act="to" data-v="doit">실험 다시 보기</button>':''}
+      <button class="btn" data-act="to" data-v="why" ${ok?'':'disabled'}>왜 그럴까?</button></div>`;
+  if(!ok)say([ko(c.rq+' 본 대로 골라 봐!')]);
 },
 why(){
-  const c=R.card,same=R.pred===R.res,usual=R.res===c.a;
-  const verdict=same?'우와, 예상이 딱 맞았어!':'예상이랑 달랐네! 그래서 실험이 재밌는 거야.';
-  const note=usual?'':`보통은 "${c.o[c.a][1]}" 쪽이 돼. 실험은 할 때마다 다르게 나올 수 있으니까 다음에 또 해 보자!`;
-  app.innerHTML=`${flowTop(4)}<div class="main"><div class="in" style="--cat:${CATS[c.cat].c}">
+  const c=R.card,same=R.pred===c.a;
+  const verdict=same?'우와, 처음 예상이 딱 맞았네! 대단해!':'처음 예상이랑은 달랐지? 그래서 실험이 재밌는 거야!';
+  app.innerHTML=`${flowTop(3)}<div class="main"><div class="in" style="--cat:${CATS[c.cat].c}">
       <p class="verdict">${verdict}</p>
       <div class="why"><b>${c.o[c.a][0]}</b><span>${c.w}</span></div>
-      ${note?`<p class="note">${note}</p>`:''}
       ${S.english?`<div><button class="eng" data-act="eng">🔊 ${c.en[0]} <small>${c.en[1]}</small></button></div>`:''}
     </div></div><div class="foot"><button class="btn" data-act="keep">도감에 넣기</button></div>`;
-  const parts=[ko(verdict+' '+c.w+(note?' '+note:''))];
+  const parts=[ko(verdict+' '+c.w)];
   if(S.english)parts.push(ko(`${c.en[1]}. 영어로는`),{t:c.en[0],lang:'en-US'});
   say(parts);
 },
@@ -617,11 +1145,11 @@ cheer(){
   const c=R.card,nb=R.newBadges||[];
   const conf=Array.from({length:26},(_,i)=>`<i style="left:${(i*37)%100}%;background:${['#F25C54','#3FA7F5','#3DBE7B','#8C6BE8','#FFFDF5','#FF7AA8'][i%6]};animation-delay:${(i%9)*0.12}s"></i>`).join('');
   app.innerHTML=`<div class="confetti">${conf}</div><div class="top"></div><div class="main"><div class="in">
-      <h1>도감에 새 카드가 들어갔어!</h1>
+      <h1>도감에 새 카드가 쏙!</h1>
       <div class="pop">${cardHTML(c)}</div>
       ${nb.map(b=>{const [e,nm]=b.split('|');return `<div><span class="newbadge"><b>${e}</b>새 배지, ${nm}</span></div>`;}).join('')}
     </div></div><div class="foot"><button class="btn" data-act="home">처음으로</button><button class="btn plain" data-act="dex">📒 내 도감 ${doneCount()}</button></div>`;
-  say([ko('도감에 새 카드가 들어갔어!'+(nb.length?' 새 배지도 받았어. '+nb.map(b=>b.split('|')[1]).join(', ')+'!':''))]);
+  sfxGood();say([ko('야호! 도감에 새 카드가 쏙 들어갔어!'+(nb.length?' 새 배지도 받았어. '+nb.map(b=>b.split('|')[1]).join(', ')+'!':''))]);
 },
 dex(){
   const have=earned(),all=[...BADGES.map(b=>b[1]+'|'+b[2]),...Object.values(CATS).map(k=>k.e+'|'+k.name+' 박사')];
@@ -633,7 +1161,7 @@ dex(){
         ?`<button class="tile" style="--cat:${CATS[c.cat].c}" data-act="open" data-id="${c.id}"><i></i><b>${c.e}</b><span>${c.t}</span></button>`
         :`<div class="tile lock"><i></i><b>❔</b><span>아직 안 한 실험</span></div>`).join('')}</div>
     </div></div>`;
-  say([ko(`내 실험 도감이야. 지금까지 실험을 ${doneCount()}개 했어.`)]);
+  say([ko(`내 실험 도감이야. 지금까지 실험을 ${doneCount()}개 했어. 카드를 누르면 또 할 수 있어!`)]);
 },
 detail(){
   const c=CARDS.find(x=>x.id===viewArg),d=S.done[c.id];
@@ -647,41 +1175,43 @@ detail(){
   say([ko(c.t+' '+c.w)]);
 },
 parent(){
-  const log=Object.entries(S.done).map(([id,d])=>({c:CARDS.find(x=>x.id===id),d})).filter(x=>x.c).sort((a,b)=>a.d.d<b.d.d?1:-1);
-  const c=nextCard();
+  const log=CARDS.filter(c=>S.done[c.id]).map(c=>({c,d:S.done[c.id]})).sort((a,b)=>a.d.d<b.d.d?1:-1);
+  const vs=koVoices();
   app.innerHTML=`<div class="top"><button class="round" data-act="home" aria-label="처음으로">←</button><div class="grow"></div><div style="width:64px"></div></div>
     <div class="main"><div class="in parent">
       <h1>어른 화면</h1>
       ${storageOK?'':'<p class="miss">이 화면에서는 기록이 저장되지 않아요. 깃허브에 올린 주소를 사파리로 열고 홈 화면에 추가하면 저장됩니다.</p>'}
       <div class="panel">
         <div class="row"><label for="nm">아이 이름 (보글이가 불러 줘요)</label><input id="nm" type="text" maxlength="8" value="${esc(S.name)}" placeholder="예: 지우"></div>
-        <div class="row"><span>소리 내어 읽어 주기</span><button class="sw" role="switch" aria-checked="${S.voice}" data-act="tg" data-k="voice" aria-label="소리 내어 읽어 주기"></button></div>
+        <div class="row"><span>소리 (읽어 주기와 효과음)</span><button class="sw" role="switch" aria-checked="${S.voice}" data-act="tg" data-k="voice" aria-label="소리"></button></div>
+        <div class="row"><span>보글이 말투</span><div class="seg">${Object.keys(TONES).map(k=>`<button class="pbtn ${S.tone===k?'on':''}" data-act="tone" data-k="${k}">${TONES[k][2]}</button>`).join('')}</div></div>
+        ${vs.length>1?`<div class="row"><label for="vs">목소리 고르기</label><select id="vs">${vs.map(v=>`<option value="${esc(v.name)}" ${v.name===S.vname?'selected':''}>${esc(v.name)}</option>`).join('')}</select></div>`:''}
+        <div class="row"><span>지금 목소리로 한마디 들어 보기</span><button class="pbtn" data-act="hear">들어 보기</button></div>
         <div class="row"><span>오늘의 영어 단어</span><button class="sw" role="switch" aria-checked="${S.english}" data-act="tg" data-k="english" aria-label="오늘의 영어 단어"></button></div>
         <div class="row"><span>하루 한 장이 기본이에요. 오늘 열린 카드 ${allowedToday()}장, 한 실험 ${doneToday()}개</span>
-          <button class="pbtn" data-act="extra" ${c?'':'disabled'}>오늘 한 장 더 열기</button></div>
+          <button class="pbtn" data-act="extra" ${nextCard()?'':'disabled'}>오늘 한 장 더 열기</button></div>
       </div>
-      <h2>다음 실험 준비물</h2>
-      <div class="panel"><p>${c?`<b>${c.e} ${c.t}</b><br>${c.m.map(m=>m[1]).join(', ')}<br>${c.tip}`:'모든 실험을 마쳤어요.'}</p></div>
       <h2>실험 기록</h2>
-      <div class="panel">${log.length?`<table><tr><th>날짜</th><th>실험</th><th>예상</th><th>결과</th></tr>${log.map(x=>
-        `<tr><td>${x.d.d.slice(5).replace('-','/')}</td><td>${x.c.e} ${x.c.t}${x.d.n>1?` (${x.d.n}번)`:''}</td><td>${x.c.o[x.d.p][1]}</td>
-         <td class="${x.d.r===x.c.a?'':'miss'}">${x.c.o[x.d.r][1]}</td></tr>`).join('')}</table>
-         <p style="margin-top:10px;font-size:14px">빨간 결과는 보통과 다르게 나온 실험이에요. 한 번 더 해 보기 좋은 카드입니다.</p>`
+      <div class="panel">${log.length?`<table><tr><th>날짜</th><th>실험</th><th>처음 예상</th><th>실험 뒤 질문</th></tr>${log.map(x=>
+        `<tr><td>${x.d.d.slice(5).replace('-','/')}</td><td>${x.c.e} ${x.c.t}${x.d.n>1?` (${x.d.n}번)`:''}</td>
+         <td class="${x.d.p===x.c.a?'':'miss'}">${x.c.o[x.d.p]?x.c.o[x.d.p][1]:''}</td>
+         <td class="${x.d.w?'miss':''}">${x.d.w?`${x.d.w}번 틀리고 맞힘`:'바로 맞힘'}</td></tr>`).join('')}</table>
+         <p style="margin-top:10px;font-size:14px">빨간 글씨는 예상이 빗나갔거나 질문에서 헷갈린 실험이에요. 도감에서 다시 해 보기 좋은 카드입니다.</p>`
         :'<p>아직 기록이 없어요. 첫 실험을 하면 여기에 쌓여요.</p>'}</div>
       <h2>기록 지우기</h2>
       <div class="panel"><div class="row"><span>도감과 배지가 모두 사라져요.</span>
         <button class="pbtn warn" data-act="wipe">${wipeArmed?'정말 지울까요? 한 번 더 누르기':'기록 모두 지우기'}</button></div></div>
     </div></div>`;
-  const nm=document.getElementById('nm');
-  nm.addEventListener('input',()=>{S.name=nm.value.trim();save();});
+  const nm=document.getElementById('nm');nm.addEventListener('input',()=>{S.name=nm.value.trim();save();});
+  const sel=document.getElementById('vs');if(sel)sel.addEventListener('change',()=>{S.vname=sel.value;save();hear();});
 }
 };
-function go(v,arg){view=v;viewArg=arg;if(v!=='parent')wipeArmed=false;V[v]();const m=app.querySelector('.main');if(m)m.scrollTop=0;}
-
+function hear(){say([ko('안녕! 나는 보글이야. 오늘도 신나는 실험 하자!')],true);}
+function go(v,arg){closeStage();view=v;viewArg=arg;if(v!=='parent')wipeArmed=false;V[v]();const m=app.querySelector('.main');if(m)m.scrollTop=0;}
 function begin(card){
   const n=card.o.length,k=(CARDS.indexOf(card)+dayNum())%n;
-  R={card,order:card.o.map((_,i)=>(i+k)%n),pred:null,res:null,newBadges:[]};
-  go('prep');
+  R={card,order:card.o.map((_,i)=>(i+k)%n),pred:null,res:null,bad:[],newBadges:[]};
+  go('predict');
 }
 
 /* ───────── 누르기 ───────── */
@@ -692,18 +1222,24 @@ app.addEventListener('click',e=>{
   else if(a==='again')say(lastSay,true);
   else if(a==='start'){const c=nextCard();if(c)begin(c);}
   else if(a==='to')go(b.dataset.v);
-  else if(a==='pred'){R.pred=+b.dataset.i;V.predict();say([ko(`${R.card.o[R.pred][1]}! 진짜 그런지 해 보자.`)]);}
-  else if(a==='res'){R.res=+b.dataset.i;V.result();say([ko(`${R.card.o[R.res][1]}! 왜 그런지 알아볼까?`)]);}
+  else if(a==='pred'){R.pred=+b.dataset.i;V.predict();say([ko(`오호~ ${R.card.o[R.pred][1]}! 진짜 그런지 실험해 보자!`)]);}
+  else if(a==='res'){
+    const i=+b.dataset.i;
+    if(i===R.card.a){R.res=i;sfxGood();V.result();say([ko('딩동댕~ 맞았어! 왜 그런지 알아볼까?')]);}
+    else{if(!R.bad.includes(i))R.bad.push(i);sfxBad();V.result();say([ko('음~ 다시 한번 생각해 봐! 실험을 다시 봐도 돼.')]);}
+  }
   else if(a==='eng')say([{t:R.card.en[0],lang:'en-US'}],true);
   else if(a==='keep'){
     const before=earned(),id=R.card.id,old=S.done[id];
-    S.done[id]=old?{d:old.d,p:R.pred,r:R.res,n:(old.n||1)+1}:{d:today(),p:R.pred,r:R.res,n:1};
+    S.done[id]=old?{d:old.d,p:old.p,w:old.w,n:(old.n||1)+1}:{d:today(),p:R.pred,w:R.bad.length,n:1};
     save();R.newBadges=earned().filter(x=>!before.includes(x));go('cheer');
   }
   else if(a==='dex')go('dex');
   else if(a==='open')go('detail',b.dataset.id);
   else if(a==='replay')begin(CARDS.find(c=>c.id===b.dataset.id));
   else if(a==='tg'){S[b.dataset.k]=!S[b.dataset.k];save();if(!S.voice){try{speechSynthesis.cancel();}catch(_){}}V.parent();}
+  else if(a==='tone'){S.tone=b.dataset.k;save();V.parent();hear();}
+  else if(a==='hear')hear();
   else if(a==='extra'){S.extra[today()]=(S.extra[today()]||0)+1;save();V.parent();}
   else if(a==='wipe'){
     if(!wipeArmed){wipeArmed=true;V.parent();}
@@ -718,9 +1254,10 @@ app.addEventListener('pointerdown',e=>{
   const g=e.target.closest('[data-hold]');if(!g)return;
   g.classList.add('holding');holdT=setTimeout(()=>{holdOff();go('parent');},1500);
 });
-['pointerup','pointercancel','pointerleave'].forEach(t=>app.addEventListener(t,holdOff,true));
+['pointerup','pointercancel'].forEach(t=>app.addEventListener(t,holdOff,true));
 document.addEventListener('contextmenu',e=>e.preventDefault());
 document.addEventListener('gesturestart',e=>e.preventDefault());
+document.addEventListener('touchmove',e=>{if(e.target.closest&&e.target.closest('.stage'))e.preventDefault();},{passive:false});
 
 /* 날짜가 바뀌면 첫 화면을 새로 그려요 */
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&view==='home')V.home();});
