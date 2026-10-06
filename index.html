@@ -1,0 +1,735 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<title>오늘의 실험</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="오늘의 실험">
+<meta name="theme-color" content="#FFCE3A">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="apple-touch-icon" href="./apple-touch-icon.png">
+<link rel="icon" type="image/png" href="./icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+<style>
+:root{
+  --sun:#FFCE3A; --ink:#1C2541; --paper:#FFFDF5;
+  --tomato:#F25C54; --sky:#3FA7F5; --leaf:#3DBE7B; --grape:#8C6BE8;
+  --cat:var(--sky);
+  --kid:'Jua','Apple SD Gothic Neo','Noto Sans KR',system-ui,sans-serif;
+  --plain:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',system-ui,sans-serif;
+  --fs-title:clamp(28px,6.2vmin,60px);
+  --fs-body:clamp(20px,4vmin,38px);
+  --fs-small:clamp(15px,2.1vmin,19px);
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{
+  background:var(--sun);color:var(--ink);font-family:var(--kid);
+  overflow:hidden;-webkit-user-select:none;user-select:none;
+  -webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;touch-action:manipulation;
+}
+#app{
+  height:100%;display:flex;flex-direction:column;
+  padding:calc(env(safe-area-inset-top,0px) + 14px) calc(env(safe-area-inset-right,0px) + 24px)
+          calc(env(safe-area-inset-bottom,0px) + 20px) calc(env(safe-area-inset-left,0px) + 24px);
+}
+button{font:inherit;color:inherit;cursor:pointer;-webkit-appearance:none;appearance:none}
+button:focus-visible,input:focus-visible{outline:4px solid var(--grape);outline-offset:3px}
+
+/* 위쪽 줄 */
+.top{display:flex;align-items:center;gap:14px;min-height:68px;flex:none}
+.top .grow{flex:1;display:flex;justify-content:center}
+.round{
+  width:64px;height:64px;flex:none;border-radius:50%;border:4px solid var(--ink);
+  background:var(--paper);box-shadow:0 5px 0 var(--ink);font-size:28px;line-height:1;
+  display:grid;place-items:center;padding:0;position:relative;
+}
+.round:active{transform:translateY(4px);box-shadow:0 1px 0 var(--ink)}
+.dots{display:flex;gap:10px}
+.dots i{width:22px;height:22px;border-radius:50%;border:4px solid var(--ink);background:var(--paper)}
+.dots i.on{background:var(--cat)}
+.dots i.now{background:var(--ink)}
+
+/* 가운데 */
+.main{flex:1;min-height:0;overflow-y:auto;display:flex;-webkit-overflow-scrolling:touch}
+.in{margin:auto;width:100%;max-width:1000px;text-align:center;padding:10px 4px 16px}
+h1{font-size:var(--fs-title);font-weight:400;margin:0 0 .6em;line-height:1.25;word-break:keep-all;text-wrap:balance}
+p{font-size:var(--fs-body);margin:0;line-height:1.45;word-break:keep-all;text-wrap:balance}
+
+/* 아래 큰 버튼 */
+.foot{flex:none;display:flex;justify-content:center;align-items:center;gap:18px;padding-top:14px;flex-wrap:wrap}
+.btn{
+  font-size:clamp(24px,3.8vmin,36px);min-height:80px;padding:.45em 1.5em;
+  border:4px solid var(--ink);border-radius:999px;background:var(--leaf);color:#fff;
+  box-shadow:0 8px 0 var(--ink);text-shadow:0 2px 0 rgba(28,37,65,.35);
+}
+.btn:active{transform:translateY(6px);box-shadow:0 2px 0 var(--ink)}
+.btn.plain{background:var(--paper);color:var(--ink);text-shadow:none}
+.btn[disabled]{background:#E8E2CF;color:#9A957F;box-shadow:0 8px 0 #9A957F;border-color:#9A957F;text-shadow:none}
+
+/* 실험 카드 */
+.xcard{
+  background:var(--paper);border:5px solid var(--ink);border-radius:30px;
+  box-shadow:0 12px 0 var(--ink);overflow:hidden;width:min(100%,clamp(300px,56vmin,500px));margin:0 auto;
+}
+.xcard .band{background:var(--cat);color:#fff;font-size:clamp(18px,2.6vmin,24px);padding:.45em 1em;
+  border-bottom:5px solid var(--ink);text-shadow:0 2px 0 rgba(28,37,65,.35)}
+.xcard .pic{font-size:clamp(90px,24vmin,210px);line-height:1.2;padding:.08em 0 0}
+.xcard .ttl{font-size:clamp(24px,4.8vmin,44px);padding:0 .6em .7em;line-height:1.25;word-break:keep-all}
+.xcard.tilt{transform:rotate(-3deg)}
+.xcard.wait{background:#F2E3A6;border-style:dashed;box-shadow:none;color:#6E612C}
+.xcard.wait .pic,.xcard:not(.tilt):not(.wait) .pic{padding-top:.25em}
+
+/* 첫 화면 */
+.home{display:grid;gap:28px;align-items:center;justify-items:center}
+@media (orientation:landscape) and (min-width:800px){.home{grid-template-columns:1fr 1fr}}
+.buddy{display:flex;flex-direction:column;align-items:center;gap:6px}
+.buddy svg{width:clamp(120px,28vmin,250px);height:auto}
+.bubble{
+  background:var(--paper);border:4px solid var(--ink);border-radius:26px;padding:.7em 1em;
+  font-size:var(--fs-body);line-height:1.4;position:relative;max-width:520px;word-break:keep-all;text-wrap:balance;
+}
+.bubble::after{content:"";position:absolute;left:50%;bottom:-16px;width:24px;height:24px;margin-left:-12px;
+  background:var(--paper);border-right:4px solid var(--ink);border-bottom:4px solid var(--ink);transform:rotate(45deg)}
+.hold-hint{font-family:var(--plain);font-size:13px;font-weight:600;position:absolute;top:72px;right:-10px;width:84px;text-align:center;line-height:1.25;pointer-events:none}
+.round.holding{background:var(--sky)}
+
+/* 준비물 */
+.mats{display:flex;flex-wrap:wrap;gap:16px;justify-content:center}
+.mat{background:var(--paper);border:4px solid var(--ink);border-radius:24px;padding:16px 10px 14px;width:clamp(130px,25vmin,220px)}
+.mat b{display:block;font-size:clamp(48px,12vmin,104px);line-height:1.15;font-weight:400}
+.mat span{font-size:clamp(18px,3.3vmin,30px);line-height:1.25;display:block;word-break:keep-all}
+.tip{font-family:var(--plain);font-size:var(--fs-small);line-height:1.5;margin:22px auto 0;max-width:640px;
+  background:rgba(255,253,245,.6);border:2px dashed var(--ink);border-radius:14px;padding:10px 14px;text-align:left;
+  -webkit-user-select:text;user-select:text}
+.tip strong{font-weight:700}
+
+/* 고르기 */
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:18px;margin-top:8px}
+.opt{background:var(--paper);border:4px solid var(--ink);border-radius:26px;box-shadow:0 8px 0 var(--ink);
+  padding:22px 12px 20px;font-size:clamp(22px,4vmin,38px);line-height:1.25;word-break:keep-all;min-height:clamp(150px,30vmin,260px)}
+.opt b{display:block;font-size:clamp(54px,14vmin,124px);line-height:1.15;font-weight:400}
+.opt:active{transform:translateY(5px);box-shadow:0 3px 0 var(--ink)}
+.opt.sel{background:var(--cat);color:#fff;text-shadow:0 2px 0 rgba(28,37,65,.35);transform:translateY(5px);box-shadow:0 3px 0 var(--ink)}
+
+/* 순서 */
+.steps{display:grid;gap:18px;max-width:900px;margin:0 auto;padding:0;list-style:none}
+.steps li{display:flex;align-items:center;gap:18px;background:var(--paper);border:4px solid var(--ink);border-radius:22px;
+  padding:20px 24px;text-align:left;font-size:var(--fs-body);line-height:1.35;word-break:keep-all}
+.steps .n{flex:none;width:64px;height:64px;border-radius:50%;background:var(--cat);color:#fff;border:4px solid var(--ink);
+  display:grid;place-items:center;font-size:30px}
+
+/* 왜 그럴까 */
+.verdict{font-size:var(--fs-body);margin-bottom:16px}
+.why{background:var(--paper);border:4px solid var(--ink);border-radius:26px;padding:24px 28px;max-width:900px;margin:0 auto;
+  font-size:var(--fs-body);line-height:1.5;word-break:keep-all;display:flex;gap:18px;align-items:center;text-align:left}
+.why b{font-size:clamp(60px,11vmin,96px);font-weight:400;line-height:1;flex:none}
+.note{font-size:clamp(18px,3vmin,28px);margin-top:16px}
+.eng{margin-top:20px;display:inline-flex;align-items:center;gap:14px;background:var(--ink);color:var(--paper);
+  border:0;border-radius:999px;padding:14px 30px;font-size:clamp(22px,4vmin,38px)}
+.eng small{font-size:.75em;opacity:.8}
+.eng:active{transform:scale(.97)}
+
+/* 축하 */
+.pop{animation:pop .7s cubic-bezier(.2,1.5,.4,1) both}
+@keyframes pop{from{transform:scale(.2) rotate(-25deg);opacity:0}to{transform:scale(1) rotate(-3deg);opacity:1}}
+.newbadge{display:inline-flex;align-items:center;gap:12px;background:var(--paper);border:4px solid var(--ink);border-radius:999px;
+  padding:8px 24px 8px 12px;font-size:var(--fs-body);margin-top:28px}
+.newbadge b{font-size:1.5em;font-weight:400}
+.confetti{position:fixed;inset:0;pointer-events:none;overflow:hidden}
+.confetti i{position:absolute;top:-30px;width:16px;height:24px;border-radius:4px;animation:fall 2.6s ease-in forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+
+/* 도감 */
+.dexhead{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:22px}
+.badge{background:var(--paper);border:3px solid var(--ink);border-radius:999px;padding:6px 16px 6px 10px;
+  font-size:clamp(16px,2.3vmin,21px);display:inline-flex;gap:8px;align-items:center}
+.badge.off{opacity:.38}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:16px}
+.tile{background:var(--paper);border:4px solid var(--ink);border-radius:22px;box-shadow:0 6px 0 var(--ink);
+  padding:0 0 12px;overflow:hidden;font-size:clamp(16px,2.2vmin,20px);line-height:1.25;word-break:keep-all}
+.tile i{display:block;height:16px;background:var(--cat);border-bottom:4px solid var(--ink)}
+.tile b{display:block;font-size:clamp(46px,8vmin,64px);font-weight:400;line-height:1.3}
+.tile span{display:block;padding:0 8px}
+.tile:active{transform:translateY(4px);box-shadow:0 2px 0 var(--ink)}
+.tile.lock{background:#F2E3A6;box-shadow:none;border-style:dashed;color:#8A7A3A}
+.tile.lock i{background:transparent;border-color:transparent}
+
+/* 어른 화면 */
+.parent{font-family:var(--plain);text-align:left;max-width:720px;-webkit-user-select:text;user-select:text}
+.parent h1{font-family:var(--kid)}
+.parent h2{font-size:20px;margin:28px 0 10px}
+.parent p,.parent label,.parent td,.parent th{font-size:17px;line-height:1.5}
+.panel{background:var(--paper);border:3px solid var(--ink);border-radius:18px;padding:16px 18px}
+.row{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:10px 0;border-bottom:1px solid rgba(28,37,65,.15)}
+.row:last-child{border-bottom:0}
+.parent input[type=text]{font:inherit;font-size:18px;padding:10px 12px;border:3px solid var(--ink);border-radius:12px;width:180px;
+  background:#fff;-webkit-user-select:text;user-select:text}
+.sw{width:64px;height:38px;border-radius:999px;border:3px solid var(--ink);background:#DDD6BE;position:relative;flex:none;padding:0}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:26px;height:26px;border-radius:50%;background:var(--ink);transition:left .15s}
+.sw[aria-checked=true]{background:var(--leaf)}
+.sw[aria-checked=true]::after{left:29px}
+.pbtn{font-family:var(--plain);font-size:16px;font-weight:600;padding:10px 16px;border:3px solid var(--ink);border-radius:12px;background:#fff}
+.pbtn.warn{background:var(--tomato);color:#fff}
+.pbtn:active{transform:translateY(2px)}
+table{border-collapse:collapse;width:100%}
+th,td{text-align:left;padding:8px 10px 8px 0;border-bottom:1px solid rgba(28,37,65,.15);vertical-align:top}
+th{font-weight:600}
+.miss{color:var(--tomato);font-weight:600}
+
+@media (prefers-reduced-motion:reduce){.pop,.confetti i{animation:none}.confetti{display:none}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+/* ───────── 실험 카드 ─────────
+   e 그림 / t 제목 / m 준비물 / tip 어른에게 / q 질문 / o 보기 / a 보통 나오는 결과
+   s 순서 / w 까닭 / en 오늘의 영어 단어 */
+const CATS={
+  water:{name:'물 실험',e:'💧',c:'#3FA7F5'},
+  color:{name:'색깔 실험',e:'🎨',c:'#FF7AA8'},
+  light:{name:'빛 실험',e:'🔦',c:'#FF9F1C'},
+  air:{name:'공기 실험',e:'🎈',c:'#35B8C9'},
+  force:{name:'힘 실험',e:'🚗',c:'#F25C54'},
+  sound:{name:'소리 실험',e:'🎵',c:'#8C6BE8'},
+  kitchen:{name:'부엌 실험',e:'🧪',c:'#3DBE7B'}
+};
+const CARDS=[
+{id:'apple',cat:'water',e:'🍎',t:'사과는 물에 뜰까?',
+ m:[['🍎','사과'],['🥣','큰 그릇'],['💧','물']],
+ tip:'바닥이 젖을 수 있으니 수건을 깔아 주세요.',
+ q:'사과를 물에 넣으면 어떻게 될까?',o:[['⬆️','둥둥 뜬다'],['⬇️','가라앉는다']],a:0,
+ s:['큰 그릇에 물을 가득 담아.','사과를 살짝 넣어 봐.','뜨는지 가라앉는지 잘 봐.'],
+ w:'사과 속에는 작은 공기 방이 아주 많아. 그래서 물보다 가벼워서 둥둥 떠.',en:['float','뜨다']},
+
+{id:'volcano',cat:'kitchen',e:'🌋',t:'부글부글 화산',
+ m:[['🥄','베이킹소다'],['🍶','식초'],['🥤','컵'],['🍽️','쟁반']],
+ tip:'거품이 눈에 튀지 않게 얼굴을 가까이 대지 않도록 해 주세요. 식초에 식용 색소를 타면 더 화산 같아요.',
+ q:'베이킹소다에 식초를 부으면 어떻게 될까?',o:[['🌋','거품이 부글부글'],['😴','아무 일도 없다']],a:0,
+ s:['쟁반 위에 컵을 올려.','컵에 베이킹소다를 두 숟가락 넣어.','식초를 쪼르륵 부어 봐!'],
+ w:'베이킹소다와 식초가 만나면 공기 방울이 아주 많이 생겨. 그 방울들이 거품이 되어 넘치는 거야.',en:['bubble','방울']},
+
+{id:'shadow',cat:'light',e:'🔦',t:'커지는 그림자',
+ m:[['🔦','손전등'],['🧸','장난감'],['🧱','빈 벽']],
+ tip:'휴대폰 플래시를 써도 돼요. 빛을 눈에 직접 비추지 않게 해 주세요.',
+ q:'손전등을 장난감 가까이 가져가면 그림자는?',o:[['🐘','커진다'],['🐭','작아진다']],a:0,
+ s:['방을 어둡게 하고 벽 앞에 장난감을 세워.','손전등으로 장난감을 비춰 그림자를 만들어.','손전등을 가까이, 또 멀리 움직여 봐.'],
+ w:'빛이 가까이 오면 장난감이 빛을 더 많이 가려. 그래서 그림자가 커져.',en:['shadow','그림자']},
+
+{id:'ramp',cat:'force',e:'🚗',t:'미끄럼틀 자동차',
+ m:[['🚗','장난감 자동차'],['📚','책 여러 권'],['📏','판자나 큰 책']],
+ tip:'자동차를 밀지 말고 손만 떼게 해 주세요. 그래야 높이만 다르게 비교할 수 있어요.',
+ q:'미끄럼틀을 더 높이면 자동차는?',o:[['🏁','더 멀리 간다'],['🐢','덜 간다']],a:0,
+ s:['책 한 권에 판자를 걸쳐 낮은 미끄럼틀을 만들어.','자동차를 놓고 어디까지 가는지 봐.','책을 더 쌓아 높게 만들고 다시 놓아 봐.'],
+ w:'높은 곳에서 출발하면 자동차가 더 빨라져. 빨라진 만큼 더 멀리 가.',en:['fast','빠른']},
+
+{id:'redyellow',cat:'color',e:'🎨',t:'빨강과 노랑이 만나면',
+ m:[['🔴','빨강 물감'],['🟡','노랑 물감'],['📄','종이'],['🖌️','붓']],
+ tip:'붓 대신 손가락으로 섞어도 좋아요. 옷에 묻어도 되는 차림으로 해 주세요.',
+ q:'빨강과 노랑을 섞으면 무슨 색이 될까?',o:[['🟠','주황'],['🟢','초록'],['🟣','보라']],a:0,
+ s:['종이에 빨강 물감을 동그랗게 짜.','바로 옆에 노랑 물감을 짜.','두 색을 빙글빙글 섞어 봐.'],
+ w:'빨강과 노랑이 섞이면 주황색이 돼. 색은 섞으면 새로운 색으로 변해.',en:['orange','주황색']},
+
+{id:'static',cat:'force',e:'🎈',t:'풍선 마술',
+ m:[['🎈','풍선'],['🧻','휴지 조각']],
+ tip:'습한 날에는 잘 안 될 수 있어요. 마른 머리카락이나 털옷에 문질러 주세요. 풍선이 터지면 조각을 바로 치워 주세요.',
+ q:'머리카락에 문지른 풍선을 휴지 조각에 대면?',o:[['🧲','달라붙는다'],['😴','그대로 있다']],a:0,
+ s:['휴지를 작게 찢어 책상에 뿌려.','풍선을 머리카락에 쓱쓱 열 번 문질러.','풍선을 휴지 조각 가까이 가져가 봐.'],
+ w:'풍선을 문지르면 정전기라는 힘이 생겨. 이 힘이 가벼운 휴지를 끌어당겨.',en:['balloon','풍선']},
+
+{id:'phone',cat:'sound',e:'📞',t:'실 전화기',
+ m:[['🥤','종이컵 두 개'],['🧵','긴 실'],['📎','클립 두 개']],
+ tip:'컵 바닥 구멍은 어른이 뚫어 주세요. 실 끝에 클립을 묶으면 빠지지 않아요. 실은 3미터쯤이 좋아요.',
+ q:'실을 팽팽하게 당기고 말하면 소리가 들릴까?',o:[['👂','들린다'],['🙉','안 들린다']],a:0,
+ s:['종이컵 두 개를 실로 이어. 어른이 도와줘요.','한 명씩 컵을 들고 실이 팽팽해질 때까지 멀어져.','한 명은 컵에 대고 말하고, 한 명은 귀에 대고 들어 봐.'],
+ w:'목소리가 컵을 떨리게 하고, 그 떨림이 실을 타고 건너가. 그래서 멀리서도 들려.',en:['sound','소리']},
+
+{id:'ice',cat:'water',e:'🧊',t:'얼음은 물에 뜰까?',
+ m:[['🧊','얼음'],['🥤','투명 컵'],['💧','물']],
+ tip:'얼음을 입에 넣지 않게 지켜봐 주세요.',
+ q:'얼음을 물에 넣으면 어떻게 될까?',o:[['⬆️','둥둥 뜬다'],['⬇️','가라앉는다']],a:0,
+ s:['투명한 컵에 물을 담아.','얼음을 두 개 넣어 봐.','옆에서 얼음이 어디 있는지 봐.'],
+ w:'물이 얼어서 얼음이 되면 조금 부풀어서 가벼워져. 그래서 물 위에 떠.',en:['ice','얼음']},
+
+{id:'raisin',cat:'kitchen',e:'🍇',t:'춤추는 건포도',
+ m:[['🥤','사이다'],['🍇','건포도'],['🥛','투명 컵']],
+ tip:'방금 딴 탄산음료일수록 잘 돼요. 건포도가 크면 반으로 잘라 주세요.',
+ q:'사이다에 건포도를 넣으면 어떻게 될까?',o:[['💃','오르락내리락 춤춘다'],['⬇️','가라앉아 가만히 있다'],['⬆️','둥둥 떠 있다']],a:0,
+ s:['투명한 컵에 사이다를 부어.','건포도를 다섯 알 넣어.','건포도가 어떻게 움직이는지 지켜봐.'],
+ w:'사이다의 방울이 건포도에 붙어서 튜브처럼 위로 올려 줘. 위에서 방울이 터지면 다시 내려가.',en:['dance','춤추다']},
+
+{id:'pencil',cat:'light',e:'✏️',t:'꺾이는 연필',
+ m:[['🥛','투명 컵'],['💧','물'],['✏️','연필']],
+ tip:'컵 옆에서 눈높이를 맞춰 보게 해 주세요.',
+ q:'물컵에 넣은 연필을 옆에서 보면?',o:[['〽️','꺾여 보인다'],['➖','똑바로 보인다']],a:0,
+ s:['투명한 컵에 물을 반쯤 담아.','연필을 비스듬히 넣어.','컵 옆에서 연필을 봐.'],
+ w:'빛은 물을 지나갈 때 방향이 살짝 꺾여. 그래서 연필이 꺾인 것처럼 보이는 거야. 진짜로 부러진 건 아니야!',en:['pencil','연필']},
+
+{id:'rocket',cat:'air',e:'🚀',t:'풍선 로켓',
+ m:[['🎈','풍선']],
+ tip:'풍선은 어른이 불어 주세요. 터진 풍선 조각은 삼킬 위험이 있으니 바로 치워 주세요.',
+ q:'분 풍선을 묶지 않고 놓으면?',o:[['🚀','슈웅 날아간다'],['⬇️','그냥 떨어진다']],a:0,
+ s:['풍선을 크게 불어. 어른이 도와줘요.','입구를 묶지 말고 손으로 꼭 잡아.','하나, 둘, 셋 하고 손을 놓아 봐!'],
+ w:'풍선 속 공기가 뒤로 빠져나오면서 풍선을 앞으로 밀어. 진짜 로켓도 이렇게 날아가.',en:['rocket','로켓']},
+
+{id:'towel',cat:'force',e:'🏎️',t:'수건 길과 맨바닥 길',
+ m:[['🚗','장난감 자동차'],['📚','책과 판자'],['🧺','수건']],
+ tip:'미끄럼틀 높이는 두 번 다 똑같이 맞춰 주세요.',
+ q:'자동차는 어느 길에서 더 멀리 갈까?',o:[['✨','매끈한 맨바닥'],['🧺','폭신한 수건 위']],a:0,
+ s:['낮은 미끄럼틀을 만들고 자동차를 맨바닥으로 굴려 봐.','이번엔 미끄럼틀 아래에 수건을 깔아.','자동차를 다시 굴려서 어디까지 가는지 봐.'],
+ w:'수건은 울퉁불퉁해서 바퀴를 자꾸 붙잡아. 매끈한 바닥은 덜 붙잡아서 더 멀리 가.',en:['car','자동차']},
+
+{id:'blueyellow',cat:'color',e:'🖌️',t:'파랑과 노랑이 만나면',
+ m:[['🔵','파랑 물감'],['🟡','노랑 물감'],['📄','종이'],['🖌️','붓']],
+ tip:'파랑은 조금만 넣어도 색이 진해져요. 노랑을 넉넉히 짜 주세요.',
+ q:'파랑과 노랑을 섞으면 무슨 색이 될까?',o:[['🟢','초록'],['🟠','주황'],['🟣','보라']],a:0,
+ s:['종이에 노랑 물감을 동그랗게 짜.','바로 옆에 파랑 물감을 조금 짜.','두 색을 빙글빙글 섞어 봐.'],
+ w:'파랑과 노랑이 섞이면 초록색이 돼. 나뭇잎 색을 만들 수 있어.',en:['green','초록색']},
+
+{id:'xylo',cat:'sound',e:'🎶',t:'물컵 실로폰',
+ m:[['🥛','유리컵 세 개'],['💧','물'],['🥄','숟가락']],
+ tip:'유리컵은 살살 두드리게 해 주세요. 같은 모양의 컵이어야 소리 차이가 잘 들려요.',
+ q:'어느 컵에서 곰처럼 낮은 소리가 날까?',o:[['🐻','물이 많은 컵'],['🐦','물이 적은 컵']],a:0,
+ s:['컵 세 개에 물을 조금, 반, 가득 담아.','숟가락으로 컵 옆을 살살 두드려.','어느 컵에서 낮은 소리가 나는지 들어 봐.'],
+ w:'물이 많으면 컵이 천천히 떨려서 낮은 소리가 나. 물이 적으면 빨리 떨려서 높은 소리가 나.',en:['music','음악']},
+
+{id:'egg',cat:'water',e:'🥚',t:'소금물에 뜨는 달걀',
+ m:[['🥚','달걀'],['🥛','투명 컵'],['💧','물'],['🧂','소금']],
+ tip:'소금이 부족하면 뜨지 않아요. 뜰 때까지 한 숟가락씩 더 넣어 주세요. 날달걀을 만진 뒤에는 손을 씻겨 주세요.',
+ q:'소금을 듬뿍 녹인 물에 달걀을 넣으면?',o:[['⬆️','둥둥 뜬다'],['⬇️','가라앉는다']],a:0,
+ s:['컵에 물을 담고 달걀을 넣어 봐. 가라앉지?','달걀을 꺼내고 소금을 네 숟가락 넣어 잘 저어.','달걀을 다시 살짝 넣어 봐.'],
+ w:'소금을 녹이면 물이 더 무거워져. 무거운 물은 달걀을 위로 밀어 올려.',en:['egg','달걀']},
+
+{id:'tissue',cat:'air',e:'🧻',t:'젖지 않는 휴지',
+ m:[['🥛','투명 컵'],['🧻','휴지'],['🥣','물 담은 큰 그릇']],
+ tip:'컵을 기울이면 공기가 빠져서 휴지가 젖어요. 똑바로 넣고 똑바로 빼도록 도와주세요.',
+ q:'휴지를 넣은 컵을 거꾸로 물속에 넣으면 휴지는?',o:[['🌵','안 젖는다'],['💦','흠뻑 젖는다']],a:0,
+ s:['휴지를 뭉쳐 컵 바닥에 꾹 눌러 넣어.','컵을 거꾸로 들고 똑바로 물속에 쑥 넣어.','똑바로 꺼내서 휴지를 만져 봐.'],
+ w:'컵 안에는 눈에 안 보이는 공기가 가득해. 공기가 자리를 지켜서 물이 못 들어와.',en:['air','공기']},
+
+{id:'candy',cat:'color',e:'🌈',t:'사탕 무지개',
+ m:[['🍬','색깔 사탕'],['🍽️','흰 접시'],['💧','따뜻한 물']],
+ tip:'겉에 색이 입혀진 사탕이나 초콜릿을 쓰세요. 물은 뜨겁지 않고 따뜻한 정도면 충분해요.',
+ q:'사탕 둘레에 물을 부으면 색깔은?',o:[['🌈','쭉쭉 퍼진다'],['😴','그대로 있다']],a:0,
+ s:['흰 접시 가장자리에 사탕을 동그랗게 놓아.','접시 가운데에 따뜻한 물을 살살 부어. 어른이 도와줘요.','접시를 건드리지 말고 지켜봐.'],
+ w:'사탕 겉의 색과 설탕이 물에 녹아서 퍼져 나가. 그래서 무지개 길이 생겨.',en:['rainbow','무지개']},
+
+{id:'magnet',cat:'force',e:'🧲',t:'자석에 붙는 건?',
+ m:[['🧲','큰 자석'],['📎','클립'],['🧱','나무 블록'],['🥄','플라스틱 숟가락']],
+ tip:'작은 자석은 삼키면 매우 위험해요. 큰 자석만 쓰고 끝까지 곁에서 지켜봐 주세요.',
+ q:'자석에 착 붙는 건 뭘까?',o:[['📎','클립'],['🧱','나무 블록'],['🥄','플라스틱 숟가락']],a:0,
+ s:['클립, 나무 블록, 숟가락을 나란히 놓아.','자석을 하나씩 가까이 대 봐.','어떤 게 착 붙는지 찾아봐.'],
+ w:'자석은 쇠로 만든 물건을 끌어당겨. 클립은 쇠라서 붙고, 나무와 플라스틱은 안 붙어.',en:['magnet','자석']},
+
+{id:'pepper',cat:'kitchen',e:'🧼',t:'도망가는 후추',
+ m:[['🍽️','접시'],['💧','물'],['🧂','후추'],['🧼','주방 세제']],
+ tip:'실험이 끝나면 손을 씻겨 주세요. 다시 하려면 접시를 깨끗이 헹궈야 해요.',
+ q:'세제 묻힌 손가락으로 후추 물을 콕 찍으면?',o:[['🏃','후추가 도망간다'],['🤏','손가락에 모인다'],['😴','아무 일도 없다']],a:0,
+ s:['접시에 물을 담고 후추를 톡톡 뿌려.','손가락 끝에 세제를 조금 묻혀.','물 한가운데를 콕 찍어 봐!'],
+ w:'물은 서로 꼭 붙잡고 있어. 세제가 닿은 곳은 그 힘이 약해져서, 물이 바깥으로 확 당겨지고 후추도 따라가.',en:['soap','비누']},
+
+{id:'arrow',cat:'light',e:'➡️',t:'뒤집히는 화살표',
+ m:[['📄','종이'],['🖍️','크레파스'],['🥛','둥근 투명 컵'],['💧','물']],
+ tip:'종이를 컵에서 한 뼘쯤 떨어뜨려야 뒤집혀 보여요. 거리를 조금씩 바꿔 가며 찾아 주세요.',
+ q:'물컵 너머로 화살표를 보면?',o:[['🔄','반대쪽을 가리킨다'],['➡️','똑같이 보인다']],a:0,
+ s:['종이에 화살표를 크게 그려.','빈 컵 뒤에 종이를 세우고 컵 너머로 봐.','컵에 물을 채우고 종이를 조금 뒤로 옮겨서 다시 봐.'],
+ w:'물이 담긴 둥근 컵은 돋보기처럼 빛을 꺾어. 빛이 서로 엇갈려서 왼쪽과 오른쪽이 바뀌어 보여.',en:['arrow','화살표']},
+
+{id:'paper',cat:'air',e:'📄',t:'종이 떨어뜨리기',
+ m:[['📄','종이 두 장']],
+ tip:'의자 위처럼 조금 높은 곳에서 두 손을 동시에 떼면 차이가 잘 보여요. 올라설 때 잡아 주세요.',
+ q:'펼친 종이와 구긴 종이, 누가 먼저 떨어질까?',o:[['🪨','구긴 종이'],['📄','펼친 종이'],['🤝','똑같이']],a:0,
+ s:['종이 한 장을 공처럼 꾹꾹 구겨.','한 손에 구긴 종이, 한 손에 펼친 종이를 들어.','두 손을 같이 놓아 봐!'],
+ w:'펼친 종이는 넓어서 공기가 아래에서 많이 받쳐 줘. 구긴 종이는 공기를 쏙쏙 피해서 빨리 떨어져.',en:['paper','종이']},
+
+{id:'band',cat:'sound',e:'🎸',t:'고무줄 기타',
+ m:[['📦','빈 통'],['➰','고무줄']],
+ tip:'고무줄이 튕겨 얼굴에 맞지 않게 지켜봐 주세요.',
+ q:'고무줄을 더 팽팽하게 당겨서 튕기면 소리는?',o:[['🐦','높아진다'],['🐻','낮아진다']],a:0,
+ s:['빈 통에 고무줄을 끼워.','고무줄을 튕겨서 소리를 들어 봐.','고무줄을 손으로 더 당긴 다음 다시 튕겨 봐.'],
+ w:'고무줄이 떨리면 소리가 나. 팽팽할수록 더 빨리 떨려서 높은 소리가 나.',en:['guitar','기타']},
+
+{id:'oil',cat:'water',e:'🫒',t:'물과 기름',
+ m:[['🥛','투명 컵'],['💧','물'],['🧴','식용유'],['🥄','숟가락']],
+ tip:'물에 식용 색소를 타면 층이 더 잘 보여요. 기름은 키친타월로 닦아 버려 주세요.',
+ q:'물에 식용유를 붓고 저으면?',o:[['⬆️','기름이 위로 뜬다'],['🌀','잘 섞인다'],['⬇️','기름이 가라앉는다']],a:0,
+ s:['투명한 컵에 물을 반쯤 담아.','식용유를 조금 부어.','숟가락으로 저은 다음 가만히 기다려 봐.'],
+ w:'물과 기름은 서로 섞이기 싫어해. 기름이 더 가벼워서 물 위로 올라가.',en:['oil','기름']},
+
+{id:'bridge',cat:'force',e:'🌉',t:'종이 다리',
+ m:[['📄','종이 두 장'],['📚','책 두 더미'],['🧱','작은 블록']],
+ tip:'블록 대신 동전을 써도 되지만, 입에 넣지 않게 지켜봐 주세요.',
+ q:'어느 다리가 더 튼튼할까?',o:[['〰️','지그재그로 접은 종이'],['📄','평평한 종이']],a:0,
+ s:['책 두 더미 사이에 평평한 종이를 걸치고 블록을 올려 봐.','다른 종이를 부채처럼 지그재그로 접어.','접은 종이를 걸치고 블록을 몇 개 올릴 수 있는지 세어 봐.'],
+ w:'종이를 접으면 주름이 기둥처럼 버텨 줘. 그래서 같은 종이인데도 훨씬 튼튼해져.',en:['bridge','다리']},
+
+{id:'marker',cat:'color',e:'🖊️',t:'검은색 속에 숨은 색',
+ m:[['🧻','키친타월'],['🖊️','검은 수성 사인펜'],['🥤','컵'],['💧','물']],
+ tip:'유성펜은 안 번져요. 수성 사인펜인지 확인해 주세요. 펜에 따라 한두 가지 색만 나올 수도 있어요.',
+ q:'검은 사인펜 점에 물이 올라오면?',o:[['🌈','여러 색이 나온다'],['⚫','검은색 그대로다']],a:0,
+ s:['키친타월을 길게 자르고 아래쪽에 검은 점을 크게 찍어.','컵에 물을 조금만 담아.','점은 물에 닿지 않게, 타월 끝만 물에 담그고 기다려.'],
+ w:'검은색 잉크는 사실 여러 색을 섞어 만든 거야. 물이 올라가면서 색들을 따로따로 데려가.',en:['black','검은색']},
+
+{id:'bottle',cat:'kitchen',e:'🍾',t:'저절로 부푸는 풍선',
+ m:[['🍾','빈 페트병'],['🍶','식초'],['🥄','베이킹소다'],['🎈','풍선']],
+ tip:'풍선에 가루를 넣을 때 종이 깔때기를 쓰면 쉬워요. 풍선을 병 입구에 끝까지 씌워 주세요.',
+ q:'식초 병에 씌운 풍선 속 가루를 떨어뜨리면 풍선은?',o:[['🎈','저절로 부푼다'],['😴','그대로다']],a:0,
+ s:['병에 식초를 손가락 두 마디만큼 부어.','풍선에 베이킹소다를 두 숟가락 넣고 병에 씌워. 어른이 도와줘요.','풍선을 들어 올려 가루를 병 속으로 떨어뜨려!'],
+ w:'식초와 베이킹소다가 만나면 공기 같은 기체가 생겨. 갈 곳 없는 기체가 풍선 속으로 들어가 부풀려.',en:['big','큰']},
+
+{id:'rice',cat:'sound',e:'🍚',t:'춤추는 쌀알',
+ m:[['🥣','그릇'],['⬜','비닐 랩'],['🍚','쌀알'],['🍳','냄비와 숟가락']],
+ tip:'랩이 팽팽할수록, 소리가 클수록 잘 튀어요. 소리가 크니 귀 가까이에서는 치지 않게 해 주세요.',
+ q:'쌀알 옆에서 냄비를 탕 치면 쌀알은?',o:[['🤸','통통 튄다'],['😴','가만히 있다']],a:0,
+ s:['그릇에 랩을 팽팽하게 씌워. 어른이 도와줘요.','랩 위에 쌀알을 조금 올려.','그릇 가까이에서 냄비를 숟가락으로 탕탕 쳐 봐.'],
+ w:'소리는 공기를 떨리게 해. 그 떨림이 랩에 닿아서 쌀알이 통통 튀는 거야.',en:['jump','뛰다']},
+
+{id:'tangerine',cat:'water',e:'🍊',t:'귤의 구명조끼',
+ m:[['🍊','귤 두 개'],['🥣','큰 그릇'],['💧','물']],
+ tip:'귤에 따라 깐 귤도 뜰 수 있어요. 그럴 땐 다른 귤로 한 번 더 해 보세요.',
+ q:'누가 물에 뜰까?',o:[['🍊','껍질 있는 귤'],['🟠','껍질 깐 귤'],['🤝','둘 다']],a:0,
+ s:['귤 하나는 껍질을 까.','큰 그릇에 물을 가득 담아.','귤 두 개를 같이 넣어 봐.'],
+ w:'귤껍질에는 작은 공기 방이 많아서 구명조끼처럼 귤을 띄워 줘. 껍질을 벗기면 조끼가 없어져서 가라앉아.',en:['sink','가라앉다']},
+
+{id:'cupflip',cat:'air',e:'🥛',t:'쏟아지지 않는 물',
+ m:[['🥛','컵'],['💧','물'],['🃏','빳빳한 종이']],
+ tip:'싱크대나 욕실에서 해 주세요. 코팅된 카드나 엽서가 좋고, 컵에 물을 가득 채울수록 잘 돼요.',
+ q:'물이 가득한 컵을 종이로 덮고 뒤집으면?',o:[['🙌','물이 안 쏟아진다'],['💦','와르르 쏟아진다']],a:0,
+ s:['컵에 물을 가득 채워.','빳빳한 종이로 입구를 덮고 손으로 눌러.','컵을 뒤집은 다음 종이에서 손을 살짝 떼 봐. 어른이 도와줘요.'],
+ w:'우리 둘레의 공기가 종이를 아래에서 위로 밀어 줘. 그 힘이 물을 받쳐서 안 쏟아져.',en:['cup','컵']},
+
+{id:'warm',cat:'water',e:'🌡️',t:'따뜻한 물과 차가운 물',
+ m:[['🥛','투명 컵 두 개'],['♨️','따뜻한 물'],['❄️','차가운 물'],['🎨','식용 색소']],
+ tip:'따뜻한 물은 어른이 준비해 주세요. 뜨겁지 않아도 차이가 보여요. 색소를 넣은 뒤에는 젓지 않아요.',
+ q:'색소 한 방울은 어디서 더 빨리 퍼질까?',o:[['♨️','따뜻한 물'],['❄️','차가운 물'],['🤝','똑같다']],a:0,
+ s:['컵 하나에는 따뜻한 물, 하나에는 차가운 물을 담아.','두 컵에 색소를 한 방울씩 똑 떨어뜨려.','젓지 말고 색이 퍼지는 걸 지켜봐.'],
+ w:'물은 아주 작은 알갱이들이 모인 거야. 따뜻하면 알갱이들이 더 빨리 움직여서 색을 빨리 퍼뜨려.',en:['hot','뜨거운']},
+
+{id:'milk',cat:'kitchen',e:'🥛',t:'우유 색깔 폭죽',
+ m:[['🍽️','접시'],['🥛','우유'],['🎨','식용 색소'],['🧼','세제 묻힌 면봉']],
+ tip:'저지방보다 일반 우유가 잘 돼요. 실험한 우유는 마시지 않게 해 주세요.',
+ q:'색소 띄운 우유에 세제 묻힌 면봉을 대면?',o:[['🎆','색이 확 퍼진다'],['😴','색이 그대로 있다']],a:0,
+ s:['접시에 우유를 얕게 부어.','색소를 여기저기 한 방울씩 떨어뜨려.','세제 묻힌 면봉으로 가운데를 콕 찍어 봐!'],
+ w:'세제는 우유 속 기름을 만나면 이리저리 쫓아다녀. 그 움직임 때문에 색이 폭죽처럼 퍼져.',en:['milk','우유']},
+
+{id:'crayon',cat:'color',e:'🖍️',t:'숨은 그림 찾기',
+ m:[['📄','흰 종이'],['🖍️','흰 크레파스'],['🎨','물감'],['🖌️','붓']],
+ tip:'물감은 물을 넉넉히 타서 묽게 해 주세요. 어른이 미리 비밀 그림을 그려 두면 더 신나요.',
+ q:'흰 크레파스 그림 위에 물감을 칠하면?',o:[['🪄','그림이 나타난다'],['🙈','그림이 안 보인다']],a:0,
+ s:['흰 종이에 흰 크레파스로 꾹꾹 눌러 그림을 그려.','붓에 묽은 물감을 듬뿍 묻혀.','종이 위를 쓱쓱 칠해 봐.'],
+ w:'크레파스는 기름으로 만들어서 물감을 튕겨 내. 그래서 그린 자리만 하얗게 남아.',en:['white','흰색']},
+
+{id:'walk',cat:'color',e:'🚶',t:'걸어가는 물',
+ m:[['🥛','투명 컵 세 개'],['💧','물'],['🎨','식용 색소 두 색'],['🧻','키친타월']],
+ tip:'물이 올라가는 건 금방 보이지만 빈 컵이 차려면 한두 시간 걸려요. 그대로 두고 나중에 다시 보여 주세요.',
+ q:'색물 컵과 빈 컵을 키친타월로 이으면?',o:[['🚶','물이 건너간다'],['😴','물이 그대로 있다']],a:0,
+ s:['양쪽 컵에 색물을 가득 담고 가운데에 빈 컵을 놓아.','키친타월을 길게 접어 색물 컵과 빈 컵을 다리처럼 이어.','물이 타월을 타고 올라가는지 지켜봐.'],
+ w:'키친타월에는 아주 작은 구멍이 많아. 물이 그 구멍을 타고 기어 올라가서 옆 컵으로 넘어가.',en:['walk','걷다']},
+
+{id:'saltice',cat:'water',e:'🧂',t:'소금 뿌린 얼음',
+ m:[['🧊','얼음 두 개'],['🍽️','접시 두 개'],['🧂','소금']],
+ tip:'10분쯤 걸려요. 기다리는 동안 타이머를 같이 보면 좋아요.',
+ q:'어느 얼음이 더 빨리 녹을까?',o:[['🧂','소금 뿌린 얼음'],['🧊','그냥 얼음'],['🤝','똑같다']],a:0,
+ s:['접시 두 개에 얼음을 하나씩 놓아.','한쪽 얼음에만 소금을 솔솔 뿌려.','조금 기다렸다가 어느 쪽이 더 녹았는지 봐.'],
+ w:'소금은 얼음을 더 잘 녹게 만들어. 겨울에 눈 쌓인 길에 소금 같은 가루를 뿌리는 것도 그래서야.',en:['salt','소금']},
+
+{id:'oobleck',cat:'kitchen',e:'🥣',t:'이상한 반죽',
+ m:[['🥣','그릇'],['🌽','전분 가루'],['💧','물']],
+ tip:'전분 한 컵에 물 반 컵 정도예요. 남은 반죽을 하수구에 버리면 막혀요. 말려서 쓰레기통에 버려 주세요.',
+ q:'전분 반죽을 주먹으로 탁 치면?',o:[['🪨','딱딱하다'],['💦','물처럼 튄다']],a:0,
+ s:['그릇에 전분 가루와 물을 넣고 손으로 천천히 섞어.','반죽을 손가락으로 천천히 눌러 봐. 쑥 들어가지?','이번엔 주먹으로 탁 쳐 봐!'],
+ w:'이 반죽은 천천히 만지면 물처럼 흐르고, 세게 치면 가루들이 꽉 뭉쳐서 딱딱해져.',en:['hard','딱딱한']},
+
+{id:'drop',cat:'water',e:'🪙',t:'동전 위 물방울',
+ m:[['🪙','동전'],['💧','물'],['🥤','빨대']],
+ tip:'빨대를 물에 담그고 위쪽 구멍을 손가락으로 막았다 떼면 한 방울씩 떨어져요. 동전을 입에 넣지 않게 지켜봐 주세요.',
+ q:'동전 위에 물방울을 계속 올리면?',o:[['💧','볼록하게 솟는다'],['💦','바로 흘러내린다']],a:0,
+ s:['평평한 곳에 동전을 놓아.','빨대로 물을 한 방울씩 동전 위에 떨어뜨려.','옆에서 물이 어떤 모양인지 봐.'],
+ w:'물방울들은 서로 손을 꼭 잡고 있어. 그래서 넘치지 않고 볼록하게 버텨.',en:['coin','동전']}
+];
+const STEP_LABELS=['준비물','예상','실험','결과','까닭'];
+const BADGES=[[1,'🌱','첫 실험'],[3,'🔍','꼬마 과학자'],[7,'🥽','실험 대장'],[15,'🎓','호기심 박사'],[25,'🚀','과학 탐험가'],[CARDS.length,'🏆','실험 마스터']];
+
+/* ───────── 저장 ───────── */
+const KEY='today-experiment-v1';
+let S={name:'',voice:true,english:true,done:{},extra:{}};
+let storageOK=true;
+try{const raw=localStorage.getItem(KEY);if(raw)S=Object.assign(S,JSON.parse(raw));}catch(e){storageOK=false;}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){storageOK=false;}}
+
+/* ───────── 날짜와 진도 ───────── */
+function today(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function dayNum(){const d=new Date();return Math.floor((d.getTime()-d.getTimezoneOffset()*60000)/86400000);}
+const doneCount=()=>Object.keys(S.done).length;
+const doneToday=()=>Object.values(S.done).filter(x=>x.d===today()).length;
+const allowedToday=()=>1+(S.extra[today()]||0);
+const nextCard=()=>CARDS.find(c=>!S.done[c.id]);
+function earned(){
+  const n=doneCount(),out=[];
+  BADGES.forEach(b=>{if(n>=b[0])out.push(b[1]+'|'+b[2]);});
+  Object.keys(CATS).forEach(k=>{if(CARDS.filter(c=>c.cat===k).every(c=>S.done[c.id]))out.push(CATS[k].e+'|'+CATS[k].name+' 박사');});
+  return out;
+}
+
+/* ───────── 말하기 ───────── */
+let lastSay=[];
+function clean(t){return t.replace(/[\u{1F000}-\u{1FFFF}\u{2190}-\u{2BFF}\u{3030}\u{303D}\u{FE0F}\u{200D}]/gu,' ');}
+function pickVoice(lang){
+  try{const vs=speechSynthesis.getVoices().filter(v=>v.lang&&v.lang.replace('_','-').startsWith(lang.slice(0,2)));
+    return vs.find(v=>v.lang.replace('_','-')===lang)||vs[0]||null;}catch(e){return null;}
+}
+function say(parts,force){
+  lastSay=parts;
+  if((!S.voice&&!force)||!('speechSynthesis' in window))return;
+  try{
+    speechSynthesis.cancel();
+    parts.forEach(p=>{
+      const lang=p.lang||'ko-KR',u=new SpeechSynthesisUtterance(clean(p.t));
+      u.lang=lang;u.rate=lang==='ko-KR'?0.95:0.8;u.pitch=1.1;
+      const v=pickVoice(lang);if(v)u.voice=v;
+      speechSynthesis.speak(u);
+    });
+  }catch(e){}
+}
+const ko=t=>({t});
+if('speechSynthesis' in window){try{speechSynthesis.getVoices();}catch(e){}}
+
+/* ───────── 보글이 ───────── */
+function buddy(mood){
+  const d=dayNum(),liq=['#3FA7F5','#3DBE7B','#8C6BE8','#F25C54','#FF7AA8','#FF9F1C'][d%6];
+  const hat=[
+    '',
+    '<path d="M76 14 L100 -34 L124 14 Z" fill="#F25C54" stroke="#1C2541" stroke-width="6" stroke-linejoin="round"/><circle cx="100" cy="-34" r="9" fill="#FFFDF5" stroke="#1C2541" stroke-width="5"/>',
+    '<path d="M66 14 Q66 -22 100 -22 Q134 -22 134 14 Z" fill="#3FA7F5" stroke="#1C2541" stroke-width="6" stroke-linejoin="round"/><path d="M128 10 H164" stroke="#1C2541" stroke-width="10" stroke-linecap="round"/>',
+    '<path d="M100 92 L70 76 V108 Z M100 92 L130 76 V108 Z" fill="#F25C54" stroke="#1C2541" stroke-width="5" stroke-linejoin="round"/><circle cx="100" cy="92" r="7" fill="#1C2541"/>'
+  ][d%4];
+  const mouth=mood==='wow'
+    ?'<ellipse cx="100" cy="170" rx="10" ry="12" fill="#1C2541"/>'
+    :'<path d="M86 164 Q100 180 114 164" fill="none" stroke="#1C2541" stroke-width="6" stroke-linecap="round"/>';
+  return `<svg viewBox="0 -48 200 256" role="img" aria-label="실험 친구 보글이">
+    <defs><clipPath id="fl"><path d="M80 24 H120 V82 L176 178 Q184 198 164 200 H36 Q16 198 24 178 L80 82 Z"/></clipPath></defs>
+    <path d="M80 24 H120 V82 L176 178 Q184 198 164 200 H36 Q16 198 24 178 L80 82 Z" fill="#FFFDF5"/>
+    <g clip-path="url(#fl)"><rect x="0" y="118" width="200" height="90" fill="${liq}"/>
+      <circle cx="58" cy="182" r="7" fill="#fff" opacity=".55"/><circle cx="146" cy="170" r="5" fill="#fff" opacity=".55"/><circle cx="134" cy="188" r="4" fill="#fff" opacity=".55"/></g>
+    <path d="M80 24 H120 V82 L176 178 Q184 198 164 200 H36 Q16 198 24 178 L80 82 Z" fill="none" stroke="#1C2541" stroke-width="7" stroke-linejoin="round"/>
+    <rect x="70" y="12" width="60" height="16" rx="8" fill="#FFFDF5" stroke="#1C2541" stroke-width="6"/>
+    <circle cx="80" cy="148" r="9" fill="#1C2541"/><circle cx="120" cy="148" r="9" fill="#1C2541"/>
+    <circle cx="83" cy="145" r="3" fill="#fff"/><circle cx="123" cy="145" r="3" fill="#fff"/>
+    ${mouth}${hat}</svg>`;
+}
+function callName(){
+  const n=(S.name||'').trim();if(!n)return '';
+  const code=n.charCodeAt(n.length-1);
+  if(code<0xAC00||code>0xD7A3)return n+', ';
+  return n+((code-0xAC00)%28?'아, ':'야, ');
+}
+
+/* ───────── 화면 ───────── */
+const app=document.getElementById('app');
+let R=null;          // 지금 하고 있는 실험
+let view='home',viewArg=null,wipeArmed=false;
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function cardHTML(c,cls){
+  return `<div class="xcard ${cls||''}" style="--cat:${CATS[c.cat].c}">
+    <div class="band">${CATS[c.cat].e} ${CATS[c.cat].name}</div>
+    <div class="pic">${c.e}</div><div class="ttl">${c.t}</div></div>`;
+}
+function flowTop(i){
+  return `<div class="top"><button class="round" data-act="home" aria-label="그만하고 처음으로">✕</button>
+    <div class="grow"><div class="dots" aria-label="${STEP_LABELS[i]} 단계">${STEP_LABELS.map((_,k)=>`<i class="${k<i?'on':k===i?'now':''}"></i>`).join('')}</div></div>
+    <button class="round" data-act="again" aria-label="다시 듣기">🔊</button></div>`;
+}
+function optsHTML(act,sel){
+  return `<div class="opts">${R.order.map(i=>`<button class="opt ${sel===i?'sel':''}" data-act="${act}" data-i="${i}"><b>${R.card.o[i][0]}</b>${R.card.o[i][1]}</button>`).join('')}</div>`;
+}
+
+const V={
+home(){
+  const c=nextCard(),n=doneCount(),can=c&&doneToday()<allowedToday();
+  let line,foot;
+  if(!c){line=`${callName()}실험을 전부 해냈어! 도감에서 좋아하는 실험을 또 해 봐.`;}
+  else if(can){line=`${callName()}오늘의 실험이 도착했어!`;}
+  else{line=`${callName()}오늘 실험 끝! 내일 새 실험이 와.`;}
+  foot=can?`<button class="btn" data-act="start">실험 시작</button><button class="btn plain" data-act="dex">📒 내 도감 ${n}</button>`
+          :`<button class="btn" data-act="dex">📒 내 도감 ${n}</button>`;
+  app.innerHTML=`<div class="top"><button class="round" data-act="again" aria-label="다시 듣기">🔊</button><div class="grow"></div>
+      <button class="round" data-hold aria-label="어른 화면, 길게 누르기">⚙️<span class="hold-hint">어른은<br>꾹 누르기</span></button></div>
+    <div class="main"><div class="in home">
+      <div class="buddy"><div class="bubble">${line}</div><div style="height:14px"></div>${buddy(can?'wow':'')}</div>
+      ${can?cardHTML(c,'tilt'):c?`<div class="xcard wait"><div class="pic">🎁</div><div class="ttl">내일 열리는 실험</div></div>`:`<div class="xcard"><div class="pic">🏆</div><div class="ttl">실험 마스터</div></div>`}
+    </div></div>
+    <div class="foot">${foot}</div>`;
+  say([ko(line)]);
+},
+prep(){
+  const c=R.card;
+  app.innerHTML=`${flowTop(0)}<div class="main"><div class="in" style="--cat:${CATS[c.cat].c}">
+      <h1>${c.e} ${c.t}</h1>
+      <div class="mats">${c.m.map(m=>`<div class="mat"><b>${m[0]}</b><span>${m[1]}</span></div>`).join('')}</div>
+      <div class="tip"><strong>어른에게</strong> ${c.tip}</div>
+    </div></div><div class="foot"><button class="btn" data-act="to" data-v="predict">다 모았어요</button></div>`;
+  say([ko(`${c.t} 준비물을 모아 보자. ${c.m.map(m=>m[1]).join(', ')}.`)]);
+},
+predict(){
+  const c=R.card,picked=R.pred!=null;
+  app.innerHTML=`${flowTop(1)}<div class="main"><div class="in" style="--cat:${CATS[c.cat].c}">
+      <h1>${c.q}</h1>${optsHTML('pred',R.pred)}
+    </div></div><div class="foot"><button class="btn" data-act="to" data-v="doit" ${picked?'':'disabled'}>실험하러 가기</button></div>`;
+  if(!picked)say([ko(`${c.q} 네 생각을 골라 봐.`)]);
+},
+doit(){
+  const c=R.card;
+  app.innerHTML=`${flowTop(2)}<div class="main"><div class="in" style="--cat:${CATS[c.cat].c}">
+      <ol class="steps">${c.s.map((s,i)=>`<li><span class="n">${i+1}</span><span>${s}</span></li>`).join('')}</ol>
+    </div></div><div class="foot"><button class="btn" data-act="to" data-v="result">실험 끝!</button></div>`;
+  const ord=['하나.','둘.','셋.','넷.'];
+  say([ko(c.s.map((s,i)=>ord[i]+' '+s).join(' ')+' 다 했으면 실험 끝 버튼을 눌러.')]);
+},
+result(){
+  const c=R.card,picked=R.res!=null;
+  app.innerHTML=`${flowTop(3)}<div class="main"><div class="in" style="--cat:${CATS[c.cat].c}">
+      <h1>어떻게 됐어? 본 대로 골라 봐</h1>${optsHTML('res',R.res)}
+    </div></div><div class="foot"><button class="btn" data-act="to" data-v="why" ${picked?'':'disabled'}>왜 그럴까?</button></div>`;
+  if(!picked)say([ko('어떻게 됐어? 눈으로 본 대로 골라 봐.')]);
+},
+why(){
+  const c=R.card,same=R.pred===R.res,usual=R.res===c.a;
+  const verdict=same?'우와, 예상이 딱 맞았어!':'예상이랑 달랐네! 그래서 실험이 재밌는 거야.';
+  const note=usual?'':`보통은 "${c.o[c.a][1]}" 쪽이 돼. 실험은 할 때마다 다르게 나올 수 있으니까 다음에 또 해 보자!`;
+  app.innerHTML=`${flowTop(4)}<div class="main"><div class="in" style="--cat:${CATS[c.cat].c}">
+      <p class="verdict">${verdict}</p>
+      <div class="why"><b>${c.o[c.a][0]}</b><span>${c.w}</span></div>
+      ${note?`<p class="note">${note}</p>`:''}
+      ${S.english?`<div><button class="eng" data-act="eng">🔊 ${c.en[0]} <small>${c.en[1]}</small></button></div>`:''}
+    </div></div><div class="foot"><button class="btn" data-act="keep">도감에 넣기</button></div>`;
+  const parts=[ko(verdict+' '+c.w+(note?' '+note:''))];
+  if(S.english)parts.push(ko(`${c.en[1]}. 영어로는`),{t:c.en[0],lang:'en-US'});
+  say(parts);
+},
+cheer(){
+  const c=R.card,nb=R.newBadges||[];
+  const conf=Array.from({length:26},(_,i)=>`<i style="left:${(i*37)%100}%;background:${['#F25C54','#3FA7F5','#3DBE7B','#8C6BE8','#FFFDF5','#FF7AA8'][i%6]};animation-delay:${(i%9)*0.12}s"></i>`).join('');
+  app.innerHTML=`<div class="confetti">${conf}</div><div class="top"></div><div class="main"><div class="in">
+      <h1>도감에 새 카드가 들어갔어!</h1>
+      <div class="pop">${cardHTML(c)}</div>
+      ${nb.map(b=>{const [e,nm]=b.split('|');return `<div><span class="newbadge"><b>${e}</b>새 배지, ${nm}</span></div>`;}).join('')}
+    </div></div><div class="foot"><button class="btn" data-act="home">처음으로</button><button class="btn plain" data-act="dex">📒 내 도감 ${doneCount()}</button></div>`;
+  say([ko('도감에 새 카드가 들어갔어!'+(nb.length?' 새 배지도 받았어. '+nb.map(b=>b.split('|')[1]).join(', ')+'!':''))]);
+},
+dex(){
+  const have=earned(),all=[...BADGES.map(b=>b[1]+'|'+b[2]),...Object.values(CATS).map(k=>k.e+'|'+k.name+' 박사')];
+  app.innerHTML=`<div class="top"><button class="round" data-act="home" aria-label="처음으로">←</button><div class="grow"></div><div style="width:64px"></div></div>
+    <div class="main"><div class="in">
+      <h1>내 실험 도감 ${doneCount()} / ${CARDS.length}</h1>
+      <div class="dexhead">${all.map(b=>{const [e,nm]=b.split('|');return `<span class="badge ${have.includes(b)?'':'off'}">${e} ${nm}</span>`;}).join('')}</div>
+      <div class="grid">${CARDS.map(c=>S.done[c.id]
+        ?`<button class="tile" style="--cat:${CATS[c.cat].c}" data-act="open" data-id="${c.id}"><i></i><b>${c.e}</b><span>${c.t}</span></button>`
+        :`<div class="tile lock"><i></i><b>❔</b><span>아직 안 한 실험</span></div>`).join('')}</div>
+    </div></div>`;
+  say([ko(`내 실험 도감이야. 지금까지 실험을 ${doneCount()}개 했어.`)]);
+},
+detail(){
+  const c=CARDS.find(x=>x.id===viewArg),d=S.done[c.id];
+  app.innerHTML=`<div class="top"><button class="round" data-act="dex" aria-label="도감으로">←</button><div class="grow"></div>
+      <button class="round" data-act="again" aria-label="다시 듣기">🔊</button></div>
+    <div class="main"><div class="in" style="--cat:${CATS[c.cat].c}">
+      ${cardHTML(c)}<div style="height:26px"></div>
+      <div class="why"><b>${c.o[c.a][0]}</b><span>${c.w}</span></div>
+      <p class="note">${d.d.replace(/-/g,'. ')}에 처음 했어. 지금까지 ${d.n}번!</p>
+    </div></div><div class="foot"><button class="btn" data-act="replay" data-id="${c.id}">또 해 보기</button></div>`;
+  say([ko(c.t+' '+c.w)]);
+},
+parent(){
+  const log=Object.entries(S.done).map(([id,d])=>({c:CARDS.find(x=>x.id===id),d})).filter(x=>x.c).sort((a,b)=>a.d.d<b.d.d?1:-1);
+  const c=nextCard();
+  app.innerHTML=`<div class="top"><button class="round" data-act="home" aria-label="처음으로">←</button><div class="grow"></div><div style="width:64px"></div></div>
+    <div class="main"><div class="in parent">
+      <h1>어른 화면</h1>
+      ${storageOK?'':'<p class="miss">이 화면에서는 기록이 저장되지 않아요. 깃허브에 올린 주소를 사파리로 열고 홈 화면에 추가하면 저장됩니다.</p>'}
+      <div class="panel">
+        <div class="row"><label for="nm">아이 이름 (보글이가 불러 줘요)</label><input id="nm" type="text" maxlength="8" value="${esc(S.name)}" placeholder="예: 지우"></div>
+        <div class="row"><span>소리 내어 읽어 주기</span><button class="sw" role="switch" aria-checked="${S.voice}" data-act="tg" data-k="voice" aria-label="소리 내어 읽어 주기"></button></div>
+        <div class="row"><span>오늘의 영어 단어</span><button class="sw" role="switch" aria-checked="${S.english}" data-act="tg" data-k="english" aria-label="오늘의 영어 단어"></button></div>
+        <div class="row"><span>하루 한 장이 기본이에요. 오늘 열린 카드 ${allowedToday()}장, 한 실험 ${doneToday()}개</span>
+          <button class="pbtn" data-act="extra" ${c?'':'disabled'}>오늘 한 장 더 열기</button></div>
+      </div>
+      <h2>다음 실험 준비물</h2>
+      <div class="panel"><p>${c?`<b>${c.e} ${c.t}</b><br>${c.m.map(m=>m[1]).join(', ')}<br>${c.tip}`:'모든 실험을 마쳤어요.'}</p></div>
+      <h2>실험 기록</h2>
+      <div class="panel">${log.length?`<table><tr><th>날짜</th><th>실험</th><th>예상</th><th>결과</th></tr>${log.map(x=>
+        `<tr><td>${x.d.d.slice(5).replace('-','/')}</td><td>${x.c.e} ${x.c.t}${x.d.n>1?` (${x.d.n}번)`:''}</td><td>${x.c.o[x.d.p][1]}</td>
+         <td class="${x.d.r===x.c.a?'':'miss'}">${x.c.o[x.d.r][1]}</td></tr>`).join('')}</table>
+         <p style="margin-top:10px;font-size:14px">빨간 결과는 보통과 다르게 나온 실험이에요. 한 번 더 해 보기 좋은 카드입니다.</p>`
+        :'<p>아직 기록이 없어요. 첫 실험을 하면 여기에 쌓여요.</p>'}</div>
+      <h2>기록 지우기</h2>
+      <div class="panel"><div class="row"><span>도감과 배지가 모두 사라져요.</span>
+        <button class="pbtn warn" data-act="wipe">${wipeArmed?'정말 지울까요? 한 번 더 누르기':'기록 모두 지우기'}</button></div></div>
+    </div></div>`;
+  const nm=document.getElementById('nm');
+  nm.addEventListener('input',()=>{S.name=nm.value.trim();save();});
+}
+};
+function go(v,arg){view=v;viewArg=arg;if(v!=='parent')wipeArmed=false;V[v]();const m=app.querySelector('.main');if(m)m.scrollTop=0;}
+
+function begin(card){
+  const n=card.o.length,k=(CARDS.indexOf(card)+dayNum())%n;
+  R={card,order:card.o.map((_,i)=>(i+k)%n),pred:null,res:null,newBadges:[]};
+  go('prep');
+}
+
+/* ───────── 누르기 ───────── */
+app.addEventListener('click',e=>{
+  const b=e.target.closest('[data-act]');if(!b||b.disabled)return;
+  const a=b.dataset.act;
+  if(a==='home'){try{speechSynthesis.cancel();}catch(_){ } go('home');}
+  else if(a==='again')say(lastSay,true);
+  else if(a==='start'){const c=nextCard();if(c)begin(c);}
+  else if(a==='to')go(b.dataset.v);
+  else if(a==='pred'){R.pred=+b.dataset.i;V.predict();say([ko(`${R.card.o[R.pred][1]}! 진짜 그런지 해 보자.`)]);}
+  else if(a==='res'){R.res=+b.dataset.i;V.result();say([ko(`${R.card.o[R.res][1]}! 왜 그런지 알아볼까?`)]);}
+  else if(a==='eng')say([{t:R.card.en[0],lang:'en-US'}],true);
+  else if(a==='keep'){
+    const before=earned(),id=R.card.id,old=S.done[id];
+    S.done[id]=old?{d:old.d,p:R.pred,r:R.res,n:(old.n||1)+1}:{d:today(),p:R.pred,r:R.res,n:1};
+    save();R.newBadges=earned().filter(x=>!before.includes(x));go('cheer');
+  }
+  else if(a==='dex')go('dex');
+  else if(a==='open')go('detail',b.dataset.id);
+  else if(a==='replay')begin(CARDS.find(c=>c.id===b.dataset.id));
+  else if(a==='tg'){S[b.dataset.k]=!S[b.dataset.k];save();if(!S.voice){try{speechSynthesis.cancel();}catch(_){}}V.parent();}
+  else if(a==='extra'){S.extra[today()]=(S.extra[today()]||0)+1;save();V.parent();}
+  else if(a==='wipe'){
+    if(!wipeArmed){wipeArmed=true;V.parent();}
+    else{S.done={};S.extra={};save();wipeArmed=false;V.parent();}
+  }
+});
+
+/* 어른 화면은 톱니를 1.5초 누르고 있어야 열려요 */
+let holdT=null;
+function holdOff(){clearTimeout(holdT);holdT=null;const g=app.querySelector('[data-hold]');if(g)g.classList.remove('holding');}
+app.addEventListener('pointerdown',e=>{
+  const g=e.target.closest('[data-hold]');if(!g)return;
+  g.classList.add('holding');holdT=setTimeout(()=>{holdOff();go('parent');},1500);
+});
+['pointerup','pointercancel','pointerleave'].forEach(t=>app.addEventListener(t,holdOff,true));
+document.addEventListener('contextmenu',e=>e.preventDefault());
+document.addEventListener('gesturestart',e=>e.preventDefault());
+
+/* 날짜가 바뀌면 첫 화면을 새로 그려요 */
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&view==='home')V.home();});
+
+go('home');
+
+if('serviceWorker' in navigator&&location.protocol==='https:'){
+  window.addEventListener('load',()=>{navigator.serviceWorker.register('./sw.js').catch(()=>{});});
+}
+</script>
+</body>
+</html>
